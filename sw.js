@@ -1,9 +1,9 @@
 // 자취지도 앱용 서비스 워커: 사이트 파일을 저장해두고, 인터넷이 끊기면 저장본을 보여줘요.
-const CACHE = 'jachi-v1';
-const FILES = ['./', './index.html', './자취도우미/index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const CACHE = 'jachi-v2';
+const FILES = ['./', './index.html', './map/index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => encodeURI(f)))).catch(() => {}));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).catch(() => {}));
   self.skipWaiting();
 });
 
