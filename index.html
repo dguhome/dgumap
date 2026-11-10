@@ -86,7 +86,7 @@
   .hero h1 em { font-style: normal; color: var(--accent); }
   .hero p { margin: 0; color: var(--muted); font-size: 18.5px; font-weight: 500; }
   .hero-art {
-    margin-right: -24px; overflow: hidden;
+    display: block; margin-right: -24px; overflow: hidden;
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%); mask-image: linear-gradient(90deg, transparent 0, #000 16%);
   }
   .hero-art img {
@@ -238,30 +238,113 @@
     .toc b { display: none; }
     .toc a { border: 1px solid var(--line); background: var(--panel); border-radius: 99px; white-space: nowrap; padding: 6px 12px; font-size: 13px; }
   }
+  /* 모바일 전용 요소는 기본으로 숨김 */
+  .m-only { display: none !important; }
+
+  /* ================= 모바일 (휴대폰) 디자인 ================= */
   @media (max-width: 600px) {
+    .m-only { display: revert !important; }
+    .m-map.m-only, .m-banner.m-only { display: block !important; }
+    .d-only { display: none !important; }
+    body { padding-bottom: calc(62px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, #eaf2fe 0, var(--bg) 360px, var(--bg2) 100%) fixed; }
+    :root[data-theme="dark"] body { background: var(--bg); }
     .container { padding: 0 16px; }
-    .topbar .container { height: 64px; gap: 12px; }
-    .menu { top: 64px; }
-    .logo b { font-size: 23px; }
-    .logo svg { width: 32px; }
-    .start-btn { padding: 9px 14px; font-size: 14px; }
-    .start-btn svg { display: none; }
-    .hero-art { margin: 0 -16px; }
-    .tagline { font-size: 23px; }
-    .hero h1 { font-size: 34px; letter-spacing: -1.5px; }
-    .hero p { font-size: 15.5px; }
-    .search-box { padding-left: 16px; }
-    .search input { font-size: 15px; }
-    .search button { padding: 11px 20px; font-size: 16px; letter-spacing: 1px; }
-    .sec-title { font-size: 22px; }
-    .sec-sub { margin-left: 0; font-size: 14px; }
-    .cards { grid-template-columns: 1fr; gap: 12px; }
-    .menu-card { min-height: 112px; }
-    .menu-card .ic { width: 72px; font-size: 40px; }
-    .menu-card h3 { font-size: 19px; }
-    .hot-card > img { width: 120px; height: auto; min-height: 130px; }
-    .hot-card .txt { padding: 14px 46px 14px 14px; }
-    .hot-card h3 { font-size: 17px; }
+
+    /* 헤더 */
+    .topbar { background: transparent; backdrop-filter: none; border-bottom: none; position: relative; }
+    .topbar .container { height: 58px; gap: 4px; padding-right: 8px; }
+    .logo { gap: 6px; }
+    .logo svg { width: 32px; height: 28px; }
+    .logo .logo-txt { display: flex; flex-direction: column; line-height: 1; }
+    .logo b { font-size: 20px; letter-spacing: -.8px; }
+    .logo small { font-size: 9px; font-weight: 500; color: var(--muted); margin-top: 3px; }
+    #themeBtn, .start-btn { display: none; }
+    .tools { gap: 0; }
+    .tools .icon-btn { width: 44px; height: 44px; border: none; background: transparent; font-size: 20px; }
+    .menu { top: 58px; z-index: 120; }
+
+    /* 히어로: 글자 왼쪽, 사진 오른쪽 */
+    .hero { overflow: visible; }
+    .hero .container { display: block; position: relative; min-height: 0; }
+    .hero-art {
+      position: absolute; right: 0; top: -6px; width: 66%; margin: 0; z-index: 0;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40%); mask-image: linear-gradient(90deg, transparent 0, #000 40%);
+    }
+    .hero-art img { width: 140%; margin: 0 0 0 -40%; }
+    .hero-text { padding: 6px 0 0; gap: 6px; }
+    .hero-text > :not(.search) { max-width: 64%; }
+    .tagline { font-size: 19px; text-decoration: none; }
+    .hero h1 { font-size: 25px; line-height: 1.25; letter-spacing: -1.2px; }
+    .hero p { font-size: 12px; line-height: 1.5; margin-top: 2px; max-width: 54% !important; text-shadow: 0 0 8px var(--bg), 0 0 4px var(--bg); }
+    .search { margin-top: 18px; }
+    .hero-text > .search { max-width: none; }
+    .search-box { padding: 4px 4px 4px 14px; gap: 8px; box-shadow: 0 8px 22px rgba(30,80,170,.10); }
+    .search-box svg { width: 18px; height: 18px; }
+    .search input { font-size: 12.5px; }
+    .search button { height: 38px; padding: 0 20px; font-size: 14px; letter-spacing: 0; }
+
+    /* 섹션 */
+    section.block { padding: 7px 0; }
+    .hero + section.block { padding-top: 14px; }
+    .menu-sec .sec-head { display: none; }
+    .sec-head { gap: 6px; margin-bottom: 8px; flex-wrap: nowrap; }
+    .sec-head::before { display: none; }
+    .sec-title { font-size: 15px; letter-spacing: -.5px; }
+    .sec-sub { margin-left: auto; font-size: 11.5px; color: var(--accent); gap: 4px; white-space: nowrap; }
+    .sec-sub .arrow { background: none; color: var(--accent); width: 14px; height: 14px; }
+
+    /* 메뉴 카드 2열 */
+    .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .menu-card { min-height: 74px; padding: 8px 26px 8px 10px; gap: 8px; border-radius: 14px; box-shadow: 0 4px 14px rgba(30,80,170,.07); }
+    .menu-card:hover { transform: none; }
+    .menu-card .ic { width: 54px; font-size: 30px; }
+    .menu-card .ic img { border-radius: 10px; }
+    .menu-card h3 { font-size: 14.5px; letter-spacing: -.6px; margin: 0 0 2px; }
+    .menu-card p { font-size: 10.5px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .menu-card .cnt { display: none; }
+    .chev { right: 8px; bottom: 8px; width: 22px; height: 22px; box-shadow: 0 1px 5px rgba(0,0,0,.1); }
+    .chev svg { width: 11px; height: 11px; }
+
+    /* 주변 지도 미리보기 */
+    .m-map { margin-top: 14px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(30,80,170,.07); overflow: hidden; }
+    .m-map .head { height: 40px; padding: 0 12px; display: flex; align-items: center; gap: 6px; }
+    .m-map h2 { margin: 0; font-size: 14px; font-weight: 900; letter-spacing: -.5px; }
+    .m-map .more { margin-left: auto; display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--accent); }
+    .m-map img { display: block; width: 100%; height: auto; }
+
+    /* 많이 찾는 정보 2열 */
+    .hot { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .hot-card { height: 82px; border-radius: 10px; box-shadow: 0 4px 12px rgba(30,80,170,.07); }
+    .hot-card:nth-child(n+3) { display: none; }
+    .hot-card > img { width: 70px; height: 82px; min-height: 0; }
+    .hot-card .txt { padding: 7px 8px; gap: 3px; }
+    .hot-card .tag { padding: 2px 7px; font-size: 9.5px; }
+    .hot-card h3 { font-size: 11.5px; letter-spacing: -.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hot-card p { font-size: 9px; line-height: 1.4; }
+    .hot-card .chev { display: none; }
+
+    /* 배너 */
+    .m-banner { margin-top: 14px; border-radius: 14px; overflow: hidden; }
+    .m-banner img { display: block; width: 100%; height: auto; }
+
+    footer { margin-top: 16px; padding: 18px 0; font-size: 12px; }
+    footer .container::before, footer .container::after { width: 30px; }
+
+    /* 하단 탭바 */
+    .tabbar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 110; height: calc(60px + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom); background: var(--panel); border-top: 1px solid var(--line);
+      display: grid !important; grid-template-columns: repeat(4, 1fr);
+    }
+    .tabbar a, .tabbar button {
+      position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+      color: var(--muted); font-size: 10.5px; background: none; border: none; cursor: pointer; padding: 0;
+    }
+    .tabbar .on { color: var(--accent); font-weight: 700; }
+    .tabbar .on::after { content: ""; position: absolute; bottom: 0; left: 50%; width: 46px; margin-left: -23px; height: 3px; border-radius: 2px; background: var(--accent); }
+
+    /* 메뉴 상세 페이지 */
+    .page-head { padding: 24px 0 20px; }
     .page-head h1 { font-size: 25px; }
     .tip .body { padding-left: 18px; }
   }
@@ -273,7 +356,7 @@
   <div class="container">
     <a class="logo" href="#home" aria-label="홈으로">
       <svg width="40" height="34" viewBox="0 0 40 34" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round" aria-hidden="true"><path d="M3 16 17 4l9 7.5"></path><path d="M7 13v18h11V22h4v9"></path><path d="M30 6a7 7 0 0 1 7 7c0 5-7 12-7 12s-7-7-7-12a7 7 0 0 1 7-7z" fill="currentColor"></path><circle cx="30" cy="13" r="2.4" fill="#ffffff" stroke="none"></circle></svg>
-      <b id="logo"></b>
+      <span class="logo-txt"><b id="logo"></b><small class="m-only" id="logoSub"></small></span>
     </a>
     <div class="divider"></div>
     <nav class="menu" id="menu"></nav>
@@ -284,7 +367,12 @@
       <a class="start-btn" id="startBtn" href="map/index.html">시작하기
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
       </a>
-      <button class="icon-btn" id="burger" title="메뉴" aria-label="메뉴">☰</button>
+      <button class="icon-btn m-only" id="mSearchBtn" title="검색" aria-label="검색">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      </button>
+      <button class="icon-btn" id="burger" title="메뉴" aria-label="메뉴">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -296,6 +384,22 @@
     <span id="footText"></span>
   </div>
 </footer>
+
+<!-- 휴대폰 하단 탭바 -->
+<nav class="tabbar m-only" aria-label="하단 메뉴">
+  <a href="#home" data-tab="home">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 2 11.5h3V21h5.5v-6h3v6H19v-9.5h3z"></path></svg>홈
+  </a>
+  <a href="map/index.html" data-tab="map">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.3-7 13-7 13S5 14.3 5 9a7 7 0 0 1 7-7z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>지도
+  </a>
+  <a href="#menu3" data-tab="menu3">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"></path></svg>꿀팁
+  </a>
+  <button type="button" id="tabMenu" data-tab="menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"></rect></svg>전체메뉴
+  </button>
+</nav>
 
 <script>
 // 파일을 직접 열었을 때, 서버가 켜져 있으면 localhost 주소로 자동 이동
@@ -313,6 +417,8 @@ if (location.protocol === 'file:') {
     heroTitle: '대구대 자취생활,<br>여기서 <em>더 똑똑하게.</em>',  // 홈 큰 제목 (<br> 줄바꿈, <em>파란 강조</em>)
     heroDesc: '방 찾기부터 동네 탐색, 자취 꿀팁까지 대구대생을 위한 생활 플랫폼',
     searchPlaceholder: '어떤 정보가 필요하세요?',
+    searchPlaceholderMobile: '자취방, 맛집, 편의시설을 검색해보세요!',
+    logoSub: '대구대학교 학생 생활 플랫폼',   // 휴대폰에서 로고 아래 작은 글씨
     menuSecTitle: '대구대 생활을 한곳에서',
     menuSecDesc: '더 편리한 대학생활을 위한 다양한 서비스를 만나보세요!',
     todaySecTitle: '지금 많이 찾는 정보',
@@ -441,7 +547,11 @@ if (location.protocol === 'file:') {
   };
 
   // 메뉴
-  $('logo').innerHTML = SITE.logo; $('footText').innerHTML = SITE.footer;
+  $('logo').innerHTML = SITE.logo; $('logoSub').textContent = SITE.logoSub; $('footText').innerHTML = SITE.footer;
+  const isMobile = () => matchMedia('(max-width: 600px)').matches;
+  // 휴대폰: 위쪽 돋보기 → 홈 검색창으로, 하단 '전체메뉴' → 메뉴 펼치기
+  $('mSearchBtn').onclick = () => { if (location.hash && location.hash !== '#home') location.hash = '#home'; setTimeout(() => { $('q')?.focus(); $('q')?.scrollIntoView({ block: 'center' }); }, 50); };
+  $('tabMenu').onclick = e => { e.stopPropagation(); $('menu').classList.toggle('open'); scrollTo({ top: 0 }); };
   $('menu').innerHTML = MENUS.map(m => `<a href="${hrefOf(m)}" data-id="${m.id}">${m.title}</a>`).join('');
   const ARROW = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>';
   const CHEV = '<span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 6 6 6-6 6"></path></svg></span>';
@@ -461,16 +571,19 @@ if (location.protocol === 'file:') {
             <div class="search">
               <div class="search-box">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-                <input id="q" type="text" aria-label="검색어" placeholder="${esc(SITE.searchPlaceholder)}" autocomplete="off">
+                <input id="q" type="text" aria-label="검색어" placeholder="${esc(isMobile() ? SITE.searchPlaceholderMobile : SITE.searchPlaceholder)}" autocomplete="off">
                 <button type="button" id="qBtn">검색</button>
               </div>
               <div class="search-results" id="results"></div>
             </div>
           </div>
-          <div class="hero-art"><img src="img/hero.jpg" alt="대구대학교 정문과 주변 원룸촌, 카페, 편의점, 버스정류장 일러스트"></div>
+          <picture class="hero-art">
+            <source media="(max-width: 600px)" srcset="img/hero-m.jpg">
+            <img src="img/hero.jpg" alt="대구대학교 정문과 주변 캠퍼스 모습">
+          </picture>
         </div>
       </section>
-      <section class="block">
+      <section class="block menu-sec">
         <div class="container">
           <div class="sec-head">
             <h2 class="sec-title">${SITE.menuSecTitle}</h2>
@@ -488,15 +601,25 @@ if (location.protocol === 'file:') {
                 ${CHEV}
               </a>`).join('')}
           </div>
+          <a class="m-map m-only" href="map/index.html">
+            <div class="head">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent)" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.3-7 13-7 13S5 14.3 5 9a7 7 0 0 1 7-7z"></path><circle cx="12" cy="9" r="2.6" fill="#ffffff"></circle></svg>
+              <h2>대구대 주변 지도</h2>
+              <span class="more">지도 전체보기 ${ARROW}</span>
+            </div>
+            <img src="img/map-preview.jpg" alt="대구대학교 주변 지도: 맛집, 편의점, 카페 표시">
+          </a>
         </div>
       </section>
       <section class="block">
         <div class="container">
           <div class="sec-head">
+            <svg class="m-only" width="18" height="18" viewBox="0 0 24 24" fill="#f5b81c" aria-hidden="true"><path d="m12 2 3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"></path></svg>
             <h2 class="sec-title">${SITE.todaySecTitle}</h2>
             <button class="sec-sub" id="another" type="button">${SITE.todaySecDesc} <span class="arrow">${ARROW}</span></button>
           </div>
           <div class="hot" id="today">${hotHtml()}</div>
+          <div class="m-banner m-only"><img src="img/banner.jpg" alt="DGU홈과 함께하는 더 편리한 대학생활!"></div>
         </div>
       </section>`;
   }
@@ -558,6 +681,7 @@ if (location.protocol === 'file:') {
     const m = MENUS.find(x => x.id === id);
     $('menu').classList.remove('open');
     document.querySelectorAll('#menu a').forEach(a => a.classList.toggle('active', a.dataset.id === id));
+    document.querySelectorAll('.tabbar [data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === (m ? m.id : 'home')));
 
     if (!m) {
       $('app').innerHTML = renderHome(); lastMenu = null; scrollTo(0, 0); bindHome(); return;
