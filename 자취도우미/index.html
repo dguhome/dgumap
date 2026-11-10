@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사이트 이름</title>
+<!-- 앱(홈 화면에 추가) 설정 -->
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#ff7a45">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="자취지도">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" href="../icon-192.png">
+<style>
+  :root {
+    --bg: #faf8f4; --panel: #ffffff; --text: #1f2328; --muted: #6b7078; --line: #ebe7df;
+    --accent: #ff7a45; --accent-2: #ffb08a; --accent-weak: #fff1ea; --shadow: 0 6px 24px rgba(0,0,0,.06);
+    --hero1: #fff1ea; --hero2: #fdf6e3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171b; --panel: #1f2227; --text: #eceef1; --muted: #9aa0a8; --line: #2e3238;
+      --accent: #ff8a5c; --accent-weak: #3a2a22; --shadow: 0 6px 24px rgba(0,0,0,.35);
+      --hero1: #2a211c; --hero2: #23211a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171b; --panel: #1f2227; --text: #eceef1; --muted: #9aa0a8; --line: #2e3238;
+    --accent: #ff8a5c; --accent-weak: #3a2a22; --shadow: 0 6px 24px rgba(0,0,0,.35);
+    --hero1: #2a211c; --hero2: #23211a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); line-height: 1.6;
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  }
+  a { color: inherit; text-decoration: none; }
+  button, input { font: inherit; color: inherit; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- Header ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 100; background: color-mix(in srgb, var(--panel) 92%, transparent);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  }
+  .topbar .container { display: flex; align-items: center; height: 64px; gap: 16px; }
+  .logo { font-weight: 800; font-size: 20px; letter-spacing: -.5px; white-space: nowrap; cursor: pointer; }
+  .logo span { color: var(--accent); }
+  .menu { display: flex; gap: 2px; margin-left: auto; }
+  .menu a {
+    padding: 8px 12px; border-radius: 10px; font-size: 14.5px; font-weight: 500; white-space: nowrap; color: var(--muted);
+  }
+  .menu a:hover { background: var(--bg); color: var(--text); }
+  .menu a.active { color: var(--accent); background: var(--accent-weak); font-weight: 700; }
+  .tools { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel);
+    display: grid; place-items: center; cursor: pointer; font-size: 16px;
+  }
+  #burger { display: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: linear-gradient(135deg, var(--hero1), var(--hero2));
+    border-bottom: 1px solid var(--line); padding: 64px 0 56px;
+  }
+  .hero h1 { font-size: 40px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -1px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p { margin: 0 0 24px; color: var(--muted); font-size: 16.5px; }
+  .search { position: relative; max-width: 520px; }
+  .search input {
+    width: 100%; padding: 15px 18px 15px 46px; border-radius: 14px; border: 1px solid var(--line);
+    background: var(--panel); box-shadow: var(--shadow); outline: none; font-size: 15px;
+  }
+  .search input:focus { border-color: var(--accent); }
+  .search::before { content: "🔍"; position: absolute; left: 17px; top: 50%; transform: translateY(-50%); }
+  .search-results {
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; box-shadow: var(--shadow); max-height: 360px; overflow-y: auto; display: none; z-index: 50;
+  }
+  .search-results.show { display: block; }
+  .search-results a { display: block; padding: 11px 16px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .search-results a:last-child { border-bottom: none; }
+  .search-results a:hover { background: var(--bg); }
+  .search-results small { color: var(--muted); display: block; font-size: 12px; }
+  .search-results .none { padding: 14px 16px; color: var(--muted); font-size: 14px; }
+
+  /* ---------- Sections ---------- */
+  section.block { padding: 48px 0; }
+  .sec-title { font-size: 22px; margin: 0 0 6px; letter-spacing: -.5px; }
+  .sec-sub { color: var(--muted); margin: 0 0 22px; font-size: 14.5px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .menu-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px;
+    transition: transform .15s, box-shadow .15s, border-color .15s; cursor: pointer; display: block;
+  }
+  .menu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--accent-2); }
+  .menu-card .ic { font-size: 32px; }
+  .menu-card h3 { margin: 10px 0 4px; font-size: 17px; }
+  .menu-card p { margin: 0; color: var(--muted); font-size: 13.5px; }
+  .menu-card .cnt { margin-top: 12px; font-size: 12.5px; color: var(--accent); font-weight: 600; }
+
+  .today {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px;
+    display: flex; gap: 18px; align-items: flex-start;
+  }
+  .today .ic { font-size: 40px; }
+  .today .label { font-size: 12.5px; color: var(--accent); font-weight: 700; }
+  .today h3 { margin: 2px 0 6px; font-size: 18px; }
+  .today p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .today button { margin-top: 12px; border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 7px 12px; cursor: pointer; font-size: 13px; }
+
+  /* ---------- Page ---------- */
+  .page-head { background: linear-gradient(135deg, var(--hero1), var(--hero2)); border-bottom: 1px solid var(--line); padding: 40px 0 32px; }
+  .crumb { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .crumb a:hover { color: var(--accent); }
+  .page-head h1 { margin: 0; font-size: 32px; letter-spacing: -.8px; }
+  .page-head p { margin: 6px 0 0; color: var(--muted); }
+  .page-body { display: grid; grid-template-columns: 210px 1fr; gap: 32px; padding: 32px 0 60px; }
+  .toc { position: sticky; top: 84px; align-self: start; }
+  .toc b { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+  .toc a { display: block; padding: 7px 12px; border-radius: 8px; font-size: 14px; color: var(--muted); border-left: 2px solid transparent; }
+  .toc a:hover { color: var(--text); background: var(--panel); }
+  .group { margin-bottom: 32px; scroll-margin-top: 84px; }
+  .group h2 { font-size: 19px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .tip {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+    transition: border-color .15s;
+  }
+  .tip.open { border-color: var(--accent-2); }
+  .tip summary {
+    list-style: none; padding: 16px 18px; cursor: pointer; font-weight: 600; font-size: 15px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .tip summary::-webkit-details-marker { display: none; }
+  .tip summary::after { content: "＋"; margin-left: auto; color: var(--muted); font-weight: 400; transition: transform .2s; }
+  .tip[open] summary::after { transform: rotate(45deg); color: var(--accent); }
+  .tip .num {
+    width: 26px; height: 26px; border-radius: 8px; background: var(--accent-weak); color: var(--accent);
+    display: grid; place-items: center; font-size: 13px; flex-shrink: 0;
+  }
+  .tip .body { padding: 0 18px 18px 54px; color: var(--text); font-size: 14.5px; }
+  .tip .body p { margin: 0 0 8px; }
+  .tip .body ul { margin: 0; padding-left: 18px; }
+  .tip .body li { margin: 3px 0; }
+  .tip .body .note { background: var(--accent-weak); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; margin-top: 10px; }
+  .tip.hl { animation: hl 1.6s; }
+  @keyframes hl { 0%,40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: none; } }
+
+  .pager { display: flex; justify-content: space-between; gap: 10px; margin-top: 30px; }
+  .pager a {
+    flex: 1; border: 1px solid var(--line); background: var(--panel); border-radius: 14px; padding: 14px 18px; font-size: 14px;
+  }
+  .pager a:hover { border-color: var(--accent-2); }
+  .pager a small { display: block; color: var(--muted); font-size: 12px; }
+  .pager a.next { text-align: right; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 13px; text-align: center; }
+  footer a { color: var(--accent); }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 900px) {
+    #burger { display: grid; }
+    .menu {
+      position: fixed; top: 64px; left: 0; right: 0; background: var(--panel); border-bottom: 1px solid var(--line);
+      flex-direction: column; padding: 8px 12px 14px; display: none; box-shadow: var(--shadow);
+    }
+    .menu.open { display: flex; }
+    .menu a { padding: 12px; font-size: 15px; }
+    .tools { margin-left: auto; }
+    .page-body { grid-template-columns: 1fr; }
+    .toc { position: static; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+    .toc b { display: none; }
+    .toc a { border: 1px solid var(--line); background: var(--panel); border-radius: 99px; white-space: nowrap; padding: 6px 12px; font-size: 13px; }
+  }
+  @media (max-width: 560px) {
+    .hero { padding: 40px 0 36px; }
+    .hero h1 { font-size: 28px; }
+    .page-head h1 { font-size: 25px; }
+    .tip .body { padding-left: 18px; }
+    .today { flex-direction: column; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <a class="logo" href="#home" id="logo"></a>
+    <nav class="menu" id="menu"></nav>
+    <div class="tools">
+            <button class="icon-btn" id="themeBtn" title="테마 전환">🌓</button>
+      <button class="icon-btn" id="burger" title="메뉴">☰</button>
+    </div>
+  </div>
+</div>
+
+<main id="app"></main>
+
+<footer>
+  <div class="container">
+    <span id="footText"></span>
+  </div>
+</footer>
+
+<script>
+// 파일을 직접 열었을 때, 서버가 켜져 있으면 localhost 주소로 자동 이동
+if (location.protocol === 'file:') {
+  const target = 'http://localhost:8080/' + encodeURI('자취도우미') + '/index.html' + location.hash;
+  fetch(target, { mode: 'no-cors', cache: 'no-store' }).then(() => location.replace(target)).catch(() => {});
+}
+(() => {
+  // ================= 콘텐츠 =================
+  // ================= 사이트 설정 (여기만 고치면 돼요) =================
+  const SITE = {
+    name: '사이트 이름',            // 로고·탭 제목
+    heroTitle: '메인 제목',          // 홈 큰 제목 (<br> 줄바꿈, <em>강조</em> 가능)
+    heroDesc: '메인 설명',
+    searchPlaceholder: '검색어를 입력하세요',
+    menuSecTitle: '메뉴',
+    menuSecDesc: '메뉴 설명',
+    todaySecTitle: '오늘의 팁',
+    todaySecDesc: '랜덤으로 하나씩 보여줘요',
+    footer: '푸터 문구',
+  };
+
+  // 메뉴: id(주소용 영문), icon, title, desc, groups(소제목) > tips(t: 제목, d: 내용 HTML)
+  const MENUS = [
+    {
+      id: 'menu1', icon: '📁', title: '메뉴 1', desc: '메뉴 설명',
+      groups: [
+      { title: '소제목 1', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      { title: '소제목 2', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      ]
+    },
+    {
+      id: 'menu2', icon: '📁', title: '메뉴 2', desc: '메뉴 설명',
+      groups: [
+      { title: '소제목 1', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      { title: '소제목 2', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      ]
+    },
+    {
+      id: 'menu3', icon: '📁', title: '메뉴 3', desc: '메뉴 설명',
+      groups: [
+      { title: '소제목 1', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      { title: '소제목 2', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      ]
+    },
+    {
+      id: 'menu4', icon: '📁', title: '메뉴 4', desc: '메뉴 설명',
+      groups: [
+      { title: '소제목 1', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      { title: '소제목 2', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      ]
+    },
+    {
+      id: 'menu5', icon: '📁', title: '메뉴 5', desc: '메뉴 설명',
+      groups: [
+      { title: '소제목 1', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      { title: '소제목 2', icon: '📌', tips: [
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+        { t: '제목', d: '<p>내용</p>' },
+      ]},
+      ]
+    },
+    {
+      // link가 있으면 누를 때 그 주소로 이동해요 (자취지도 = 한 칸 위 폴더의 index.html)
+      id: 'map', icon: '🗺️', title: '자취지도', desc: '우리 동네 자취 꿀장소를 카카오맵에서 찾고 저장해요',
+      link: '../index.html',
+      groups: []
+    },
+  ];
+
+  // ================= 공통 =================
+  const $ = id => document.getElementById(id);
+  const strip = html => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  };
+  const ALL = MENUS.flatMap(m => m.groups.flatMap((g, gi) => g.tips.map((t, ti) => ({ ...t, m, g, gi, ti }))));
+  const hrefOf = m => m.link || '#' + m.id;
+  const countTips = m => m.groups.reduce((a, g) => a + g.tips.length, 0);
+
+  // 테마
+  const theme = store.get('jachi-theme');
+  if (theme) document.documentElement.dataset.theme = theme;
+  $('themeBtn').onclick = () => {
+    const cur = document.documentElement.dataset.theme;
+    const dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const next = dark ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next; store.set('jachi-theme', next);
+  };
+
+  // 메뉴
+  $('logo').textContent = SITE.name; $('footText').innerHTML = SITE.footer;
+  $('menu').innerHTML = MENUS.map(m => `<a href="${hrefOf(m)}" data-id="${m.id}">${m.icon} ${m.title}</a>`).join('');
+  $('burger').onclick = () => $('menu').classList.toggle('open');
+
+  // ================= 페이지 =================
+  function renderHome() {
+    const pick = ALL[Math.floor(Math.random() * ALL.length)];
+    return `
+      <section class="hero">
+        <div class="container">
+          <h1>${SITE.heroTitle}</h1>
+          <p>${SITE.heroDesc}</p>
+          <div class="search">
+            <input id="q" type="text" placeholder="${esc(SITE.searchPlaceholder)}" autocomplete="off">
+            <div class="search-results" id="results"></div>
+          </div>
+        </div>
+      </section>
+      <section class="block">
+        <div class="container">
+          <h2 class="sec-title">${SITE.menuSecTitle}</h2>
+          <p class="sec-sub">${SITE.menuSecDesc}</p>
+          <div class="cards">
+            ${MENUS.map(m => `
+              <a class="menu-card" href="${hrefOf(m)}">
+                <div class="ic">${m.icon}</div>
+                <h3>${m.title}</h3>
+                <p>${m.desc}</p>
+                <div class="cnt">${m.link ? '바로가기' : countTips(m) + '개'} →</div>
+              </a>`).join('')}
+          </div>
+        </div>
+      </section>
+      <section class="block" style="padding-top:0">
+        <div class="container">
+          <h2 class="sec-title">${SITE.todaySecTitle}</h2>
+          <p class="sec-sub">${SITE.todaySecDesc}</p>
+          <div class="today" id="today">${todayHtml(pick)}</div>
+        </div>
+      </section>`;
+  }
+  function todayHtml(p) {
+    return `<div class="ic">${p.m.icon}</div>
+      <div>
+        <div class="label">${p.m.title} · ${p.g.title}</div>
+        <h3>${esc(p.t)}</h3>
+        <p>${esc(strip(p.d))}</p>
+        <button id="another">🔄 다른 팁 보기</button>
+        <a href="#${p.m.id}/${p.gi}-${p.ti}" style="margin-left:6px;font-size:13px;color:var(--accent)">자세히 →</a>
+      </div>`;
+  }
+
+  function renderMenu(m) {
+    const i = MENUS.indexOf(m), prev = MENUS[i - 1], next = MENUS[i + 1];
+    return `
+      <section class="page-head">
+        <div class="container">
+          <div class="crumb"><a href="#home">홈</a> › ${m.title}</div>
+          <h1>${m.icon} ${m.title}</h1>
+          <p>${m.desc}</p>
+        </div>
+      </section>
+      <div class="container page-body">
+        <aside class="toc">
+          <b>목차</b>
+          ${m.groups.map((g, gi) => `<a href="#${m.id}/g${gi}" data-g="${gi}">${g.icon} ${g.title}</a>`).join('')}
+        </aside>
+        <div>
+          ${m.groups.map((g, gi) => `
+            <div class="group" id="g${gi}">
+              <h2>${g.icon} ${g.title}</h2>
+              ${g.tips.map((t, ti) => `
+                <details class="tip" id="t${gi}-${ti}">
+                  <summary><span class="num">${ti + 1}</span>${esc(t.t)}</summary>
+                  <div class="body">${t.d}</div>
+                </details>`).join('')}
+            </div>`).join('')}
+          <div class="pager">
+            ${prev ? `<a href="${hrefOf(prev)}"><small>← 이전</small>${prev.icon} ${prev.title}</a>` : '<span style="flex:1"></span>'}
+            ${next ? `<a class="next" href="${hrefOf(next)}"><small>다음 →</small>${next.icon} ${next.title}</a>` : `<a class="next" href="#home"><small>처음으로 →</small>🏠 홈</a>`}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ================= 라우터 =================
+  let lastMenu = null;
+  function route() {
+    const [id, sub] = (location.hash.slice(1) || 'home').split('/');
+    const m = MENUS.find(x => x.id === id);
+    $('menu').classList.remove('open');
+    document.querySelectorAll('#menu a').forEach(a => a.classList.toggle('active', a.dataset.id === id));
+
+    if (!m) {
+      $('app').innerHTML = renderHome(); lastMenu = null; scrollTo(0, 0); bindHome(); return;
+    }
+    if (lastMenu !== m.id) { $('app').innerHTML = renderMenu(m); lastMenu = m.id; bindMenu(); if (!sub) scrollTo(0, 0); }
+    document.title = `${m.title} · ${SITE.name}`;
+
+    if (sub?.startsWith('g')) {
+      document.getElementById(sub)?.scrollIntoView({ behavior: 'smooth' });
+    } else if (sub) {
+      const el = document.getElementById('t' + sub);
+      if (el) { el.open = true; el.classList.add('open', 'hl'); setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 30); setTimeout(() => el.classList.remove('hl'), 1700); }
+    }
+  }
+
+  function bindHome() {
+    document.title = SITE.name;
+    const q = $('q'), res = $('results');
+    q.oninput = () => {
+      const v = q.value.trim().toLowerCase();
+      if (!v) { res.classList.remove('show'); return; }
+      const hits = ALL.filter(x => (x.t + ' ' + strip(x.d) + ' ' + x.g.title + ' ' + x.m.title).toLowerCase().includes(v)).slice(0, 12);
+      res.innerHTML = hits.length
+        ? hits.map(x => `<a href="#${x.m.id}/${x.gi}-${x.ti}">${x.m.icon} ${esc(x.t)}<small>${x.m.title} › ${x.g.title}</small></a>`).join('')
+        : '<div class="none">검색 결과가 없어요 😢</div>';
+      res.classList.add('show');
+    };
+    q.onkeydown = e => { if (e.key === 'Enter') res.querySelector('a')?.click(); if (e.key === 'Escape') res.classList.remove('show'); };
+    document.addEventListener('click', e => { if (!e.target.closest('.search')) res.classList.remove('show'); }, { once: false });
+    const bindAnother = () => $('another').onclick = () => {
+      $('today').innerHTML = todayHtml(ALL[Math.floor(Math.random() * ALL.length)]); bindAnother();
+    };
+    bindAnother();
+  }
+
+  function bindMenu() {
+    document.querySelectorAll('.tip').forEach(d => d.addEventListener('toggle', () => d.classList.toggle('open', d.open)));
+    // 목차 클릭 시 해시를 바꾸지 않고 부드럽게 스크롤
+    document.querySelectorAll('.toc a').forEach(a => a.onclick = e => {
+      e.preventDefault(); document.getElementById('g' + a.dataset.g).scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  addEventListener('hashchange', route);
+  route();
+})();
+</script>
+<script>
+// 앱 설치용 서비스 워커 등록 (인터넷 주소로 열었을 때만)
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('../sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
