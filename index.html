@@ -309,6 +309,12 @@ if (location.protocol === 'file:') {
       link: 'map/index.html',
       groups: []
     },
+    {
+      // 건의사항: 받는 곳(구글 설문지 등)이 정해지면 link: '주소' 를 넣고 soon 줄을 지우면 돼요
+      id: 'suggest', icon: '💬', title: '건의사항', desc: '사이트에 바라는 점이나 추가했으면 하는 장소를 알려주세요',
+      soon: true,
+      groups: []
+    },
   ];
 
   // ================= 공통 =================
@@ -362,7 +368,7 @@ if (location.protocol === 'file:') {
                 <div class="ic">${m.icon}</div>
                 <h3>${m.title}</h3>
                 <p>${m.desc}</p>
-                <div class="cnt">${m.link ? '바로가기' : countTips(m) + '개'} →</div>
+                <div class="cnt">${m.soon ? '준비 중' : (m.link ? '바로가기' : countTips(m) + '개') + ' →'}</div>
               </a>`).join('')}
           </div>
         </div>
@@ -402,6 +408,7 @@ if (location.protocol === 'file:') {
           ${m.groups.map((g, gi) => `<a href="#${m.id}/g${gi}" data-g="${gi}">${g.icon} ${g.title}</a>`).join('')}
         </aside>
         <div>
+          ${m.soon ? '<div class="group"><p style="color:var(--muted)">🛠️ 준비 중이에요. 곧 열릴 예정이에요!</p></div>' : ''}
           ${m.groups.map((g, gi) => `
             <div class="group" id="g${gi}">
               <h2>${g.icon} ${g.title}</h2>
