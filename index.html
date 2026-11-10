@@ -6,76 +6,105 @@
 <title>사이트 이름</title>
 <!-- 앱(홈 화면에 추가) 설정 -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ff7a45">
+<meta name="theme-color" content="#0b4fc6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="자취지도">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
+  /* ===== 색 (여기 값만 바꾸면 사이트 전체 색이 바뀌어요) ===== */
   :root {
-    --bg: #faf8f4; --panel: #ffffff; --text: #1f2328; --muted: #6b7078; --line: #ebe7df;
-    --accent: #ff7a45; --accent-2: #ffb08a; --accent-weak: #fff1ea; --shadow: 0 6px 24px rgba(0,0,0,.06);
-    --hero1: #fff1ea; --hero2: #fdf6e3;
+    --bg: #f6f9fe; --bg2: #eef4fe; --panel: #ffffff; --text: #12213f; --muted: #33405a; --line: #dbe5f5;
+    --accent: #0b4fc6; --accent-2: #9dbcf3; --accent-weak: #e3eefe; --navy: #0f1d40;
+    --shadow: 0 8px 24px rgba(30,80,170,.08);
+    --hero1: #f6f9fe; --hero2: #eef4fe; --ic-blend: multiply;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #15171b; --panel: #1f2227; --text: #eceef1; --muted: #9aa0a8; --line: #2e3238;
-      --accent: #ff8a5c; --accent-weak: #3a2a22; --shadow: 0 6px 24px rgba(0,0,0,.35);
-      --hero1: #2a211c; --hero2: #23211a;
+      --bg: #0c1322; --bg2: #0f1729; --panel: #151f36; --text: #e8eefb; --muted: #aab7d0; --line: #263352;
+      --accent: #6b9bff; --accent-2: #3b5ea8; --accent-weak: #1a2a52; --navy: #e8eefb;
+      --shadow: 0 8px 24px rgba(0,0,0,.35);
+      --hero1: #101a30; --hero2: #0c1322; --ic-blend: normal;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #15171b; --panel: #1f2227; --text: #eceef1; --muted: #9aa0a8; --line: #2e3238;
-    --accent: #ff8a5c; --accent-weak: #3a2a22; --shadow: 0 6px 24px rgba(0,0,0,.35);
-    --hero1: #2a211c; --hero2: #23211a;
+    --bg: #0c1322; --bg2: #0f1729; --panel: #151f36; --text: #e8eefb; --muted: #aab7d0; --line: #263352;
+    --accent: #6b9bff; --accent-2: #3b5ea8; --accent-weak: #1a2a52; --navy: #e8eefb;
+    --shadow: 0 8px 24px rgba(0,0,0,.35);
+    --hero1: #101a30; --hero2: #0c1322; --ic-blend: normal;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    margin: 0; background: var(--bg); color: var(--text); line-height: 1.6;
-    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    margin: 0; background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%) fixed; color: var(--text); line-height: 1.6;
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   }
   a { color: inherit; text-decoration: none; }
   button, input { font: inherit; color: inherit; }
-  .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  .container { max-width: 1360px; margin: 0 auto; padding: 0 24px; }
 
   /* ---------- Header ---------- */
   .topbar {
-    position: sticky; top: 0; z-index: 100; background: color-mix(in srgb, var(--panel) 92%, transparent);
-    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 100; background: color-mix(in srgb, var(--bg) 90%, transparent);
+    backdrop-filter: blur(10px); border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
   }
-  .topbar .container { display: flex; align-items: center; height: 64px; gap: 16px; }
-  .logo { font-weight: 800; font-size: 20px; letter-spacing: -.5px; white-space: nowrap; cursor: pointer; }
-  .logo span { color: var(--accent); }
-  .menu { display: flex; gap: 2px; margin-left: auto; }
+  .topbar .container { display: flex; align-items: center; height: 80px; gap: 24px; }
+  .logo { display: flex; align-items: center; gap: 8px; color: var(--accent); white-space: nowrap; cursor: pointer; }
+  .logo b { font-size: 27px; font-weight: 900; letter-spacing: -1px; color: var(--navy); }
+  .logo b span { color: var(--accent); }
+  .divider { width: 1px; height: 26px; background: var(--line); }
+  .menu { display: flex; gap: 2px; }
   .menu a {
-    padding: 8px 12px; border-radius: 10px; font-size: 14.5px; font-weight: 500; white-space: nowrap; color: var(--muted);
+    padding: 9px 14px; border-radius: 999px; font-size: 15.5px; font-weight: 500; white-space: nowrap; color: var(--text);
   }
-  .menu a:hover { background: var(--bg); color: var(--text); }
+  .menu a:hover { background: var(--accent-weak); }
   .menu a.active { color: var(--accent); background: var(--accent-weak); font-weight: 700; }
-  .tools { display: flex; gap: 6px; }
+  .tools { display: flex; gap: 10px; align-items: center; margin-left: auto; }
   .icon-btn {
-    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel);
-    display: grid; place-items: center; cursor: pointer; font-size: 16px;
+    width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel);
+    display: grid; place-items: center; cursor: pointer; font-size: 16px; color: var(--text);
   }
+  .start-btn {
+    display: flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px;
+    background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; white-space: nowrap;
+  }
+  .start-btn:hover { filter: brightness(1.08); }
   #burger { display: none; }
 
   /* ---------- Hero ---------- */
-  .hero {
-    background: linear-gradient(135deg, var(--hero1), var(--hero2));
-    border-bottom: 1px solid var(--line); padding: 64px 0 56px;
+  .hero { overflow: hidden; }
+  .hero .container { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: center; min-height: 420px; }
+  .hero-text { display: flex; flex-direction: column; gap: 16px; padding: 24px 0 36px; position: relative; z-index: 2; }
+  .tagline {
+    font-family: "Nanum Pen Script", cursive; font-size: 28px; color: var(--accent); transform: rotate(-3deg); transform-origin: left;
+    text-decoration: underline; text-decoration-color: var(--accent-2); text-underline-offset: 6px; align-self: flex-start;
   }
-  .hero h1 { font-size: 40px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -1px; }
+  .hero h1 { font-size: 58px; line-height: 1.18; margin: 0; font-weight: 900; letter-spacing: -2.5px; color: var(--navy); }
   .hero h1 em { font-style: normal; color: var(--accent); }
-  .hero p { margin: 0 0 24px; color: var(--muted); font-size: 16.5px; }
-  .search { position: relative; max-width: 520px; }
-  .search input {
-    width: 100%; padding: 15px 18px 15px 46px; border-radius: 14px; border: 1px solid var(--line);
-    background: var(--panel); box-shadow: var(--shadow); outline: none; font-size: 15px;
+  .hero p { margin: 0; color: var(--muted); font-size: 18.5px; font-weight: 500; }
+  .hero-art {
+    margin-right: -24px; overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%); mask-image: linear-gradient(90deg, transparent 0, #000 16%);
   }
-  .search input:focus { border-color: var(--accent); }
-  .search::before { content: "🔍"; position: absolute; left: 17px; top: 50%; transform: translateY(-50%); }
+  .hero-art img {
+    /* 원본 그림 왼쪽 아래의 '검색' 버튼 조각과 위쪽 가장자리를 잘라내요 */
+    display: block; width: 120%; max-width: none; height: auto; margin: -3.5% 0 0 -20%;
+  }
+  .search { position: relative; max-width: 680px; margin-top: 12px; }
+  .search-box {
+    display: flex; align-items: center; gap: 12px; padding: 7px 7px 7px 24px; border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(30,80,170,.10);
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box svg { flex-shrink: 0; color: var(--muted); }
+  .search input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font-size: 17px; color: var(--text); }
+  .search button {
+    border: none; border-radius: 999px; padding: 14px 40px; background: var(--accent); color: #fff;
+    font-size: 18px; font-weight: 700; letter-spacing: 4px; cursor: pointer;
+  }
   .search-results {
     position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--panel); border: 1px solid var(--line);
     border-radius: 14px; box-shadow: var(--shadow); max-height: 360px; overflow-y: auto; display: none; z-index: 50;
@@ -88,29 +117,48 @@
   .search-results .none { padding: 14px 16px; color: var(--muted); font-size: 14px; }
 
   /* ---------- Sections ---------- */
-  section.block { padding: 48px 0; }
-  .sec-title { font-size: 22px; margin: 0 0 6px; letter-spacing: -.5px; }
-  .sec-sub { color: var(--muted); margin: 0 0 22px; font-size: 14.5px; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  section.block { padding: 22px 0 18px; }
+  .sec-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+  .sec-head::before { content: ""; width: 36px; height: 4px; border-radius: 2px; background: var(--accent); }
+  .sec-title { font-size: 26px; margin: 0; font-weight: 900; letter-spacing: -1px; }
+  .sec-sub {
+    margin-left: auto; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 15px;
+    background: none; border: none; padding: 6px 0; cursor: pointer;
+  }
+  .arrow {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: inline-grid; place-items: center; flex-shrink: 0;
+  }
+  .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
   .menu-card {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px;
-    transition: transform .15s, box-shadow .15s, border-color .15s; cursor: pointer; display: block;
+    position: relative; min-height: 146px; padding: 22px 56px 22px 22px; border-radius: 18px;
+    background: linear-gradient(135deg, var(--t1, #e3eefe), var(--t2, #f2f7ff));
+    border: 1px solid rgba(255,255,255,.8); box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 18px; transition: transform .15s, box-shadow .15s;
   }
-  .menu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--accent-2); }
-  .menu-card .ic { font-size: 32px; }
-  .menu-card h3 { margin: 10px 0 4px; font-size: 17px; }
-  .menu-card p { margin: 0; color: var(--muted); font-size: 13.5px; }
-  .menu-card .cnt { margin-top: 12px; font-size: 12.5px; color: var(--accent); font-weight: 600; }
+  .menu-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(30,80,170,.14); }
+  .menu-card .ic { width: 96px; flex-shrink: 0; display: grid; place-items: center; font-size: 48px; }
+  .menu-card .ic img { width: 100%; height: auto; mix-blend-mode: var(--ic-blend); border-radius: 14px; }
+  .menu-card h3 { margin: 0 0 6px; font-size: 22px; font-weight: 900; letter-spacing: -.8px; color: #12213f; }
+  .menu-card p { margin: 0; color: #33405a; font-size: 14.5px; }
+  .menu-card .cnt { margin-top: 6px; font-size: 13px; color: #0b4fc6; font-weight: 700; }
+  .chev {
+    position: absolute; right: 16px; bottom: 16px; width: 34px; height: 34px; border-radius: 50%;
+    background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.08); display: grid; place-items: center; color: #0f1d40;
+  }
 
-  .today {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px;
-    display: flex; gap: 18px; align-items: flex-start;
+  .hot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .hot-card {
+    position: relative; display: flex; border-radius: 14px; overflow: hidden; background: var(--panel);
+    border: 1px solid var(--line); box-shadow: var(--shadow); transition: transform .15s;
   }
-  .today .ic { font-size: 40px; }
-  .today .label { font-size: 12.5px; color: var(--accent); font-weight: 700; }
-  .today h3 { margin: 2px 0 6px; font-size: 18px; }
-  .today p { margin: 0; color: var(--muted); font-size: 14.5px; }
-  .today button { margin-top: 12px; border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 7px 12px; cursor: pointer; font-size: 13px; }
+  .hot-card:hover { transform: translateY(-3px); }
+  .hot-card > img { width: 170px; height: 150px; object-fit: cover; flex-shrink: 0; }
+  .hot-card .txt { padding: 18px 54px 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .hot-card .tag { align-self: flex-start; padding: 3px 11px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .hot-card h3 { margin: 0; font-size: 20px; font-weight: 900; letter-spacing: -.8px; }
+  .hot-card p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .hot-card .chev { border: 1px solid var(--line); bottom: 18px; }
 
   /* ---------- Page ---------- */
   .page-head { background: linear-gradient(135deg, var(--hero1), var(--hero2)); border-bottom: 1px solid var(--line); padding: 40px 0 32px; }
@@ -157,30 +205,65 @@
   .pager a small { display: block; color: var(--muted); font-size: 12px; }
   .pager a.next { text-align: right; }
 
-  footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 13px; text-align: center; }
+  footer { margin-top: 36px; padding: 26px 0 34px; color: var(--muted); font-size: 14.5px; text-align: center; }
+  footer .container { display: flex; align-items: center; justify-content: center; gap: 18px; }
+  footer .container::before, footer .container::after { content: ""; width: 70px; height: 1px; background: var(--line); }
   footer a { color: var(--accent); }
 
+  /* ---------- 중간 화면 ---------- */
+  @media (max-width: 1200px) {
+    .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hot { grid-template-columns: 1fr; }
+    .menu a { padding: 9px 10px; font-size: 14.5px; }
+  }
+
   /* ---------- Mobile ---------- */
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
     #burger { display: grid; }
+    .divider { display: none; }
     .menu {
-      position: fixed; top: 64px; left: 0; right: 0; background: var(--panel); border-bottom: 1px solid var(--line);
+      position: fixed; top: 80px; left: 0; right: 0; background: var(--panel); border-bottom: 1px solid var(--line);
       flex-direction: column; padding: 8px 12px 14px; display: none; box-shadow: var(--shadow);
     }
     .menu.open { display: flex; }
-    .menu a { padding: 12px; font-size: 15px; }
-    .tools { margin-left: auto; }
+    .menu a { padding: 12px; font-size: 15px; border-radius: 10px; }
+  }
+  @media (max-width: 900px) {
+    .hero .container { grid-template-columns: 1fr; }
+    .hero-text { padding-bottom: 8px; }
+    .hero-art { margin: 0 -24px; }
+    .hero-art { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 12%); mask-image: linear-gradient(180deg, transparent 0, #000 12%); }
     .page-body { grid-template-columns: 1fr; }
     .toc { position: static; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
     .toc b { display: none; }
     .toc a { border: 1px solid var(--line); background: var(--panel); border-radius: 99px; white-space: nowrap; padding: 6px 12px; font-size: 13px; }
   }
-  @media (max-width: 560px) {
-    .hero { padding: 40px 0 36px; }
-    .hero h1 { font-size: 28px; }
+  @media (max-width: 600px) {
+    .container { padding: 0 16px; }
+    .topbar .container { height: 64px; gap: 12px; }
+    .menu { top: 64px; }
+    .logo b { font-size: 23px; }
+    .logo svg { width: 32px; }
+    .start-btn { padding: 9px 14px; font-size: 14px; }
+    .start-btn svg { display: none; }
+    .hero-art { margin: 0 -16px; }
+    .tagline { font-size: 23px; }
+    .hero h1 { font-size: 34px; letter-spacing: -1.5px; }
+    .hero p { font-size: 15.5px; }
+    .search-box { padding-left: 16px; }
+    .search input { font-size: 15px; }
+    .search button { padding: 11px 20px; font-size: 16px; letter-spacing: 1px; }
+    .sec-title { font-size: 22px; }
+    .sec-sub { margin-left: 0; font-size: 14px; }
+    .cards { grid-template-columns: 1fr; gap: 12px; }
+    .menu-card { min-height: 112px; }
+    .menu-card .ic { width: 72px; font-size: 40px; }
+    .menu-card h3 { font-size: 19px; }
+    .hot-card > img { width: 120px; height: auto; min-height: 130px; }
+    .hot-card .txt { padding: 14px 46px 14px 14px; }
+    .hot-card h3 { font-size: 17px; }
     .page-head h1 { font-size: 25px; }
     .tip .body { padding-left: 18px; }
-    .today { flex-direction: column; gap: 6px; }
   }
 </style>
 </head>
@@ -188,11 +271,20 @@
 
 <div class="topbar">
   <div class="container">
-    <a class="logo" href="#home" id="logo"></a>
+    <a class="logo" href="#home" aria-label="홈으로">
+      <svg width="40" height="34" viewBox="0 0 40 34" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round" aria-hidden="true"><path d="M3 16 17 4l9 7.5"></path><path d="M7 13v18h11V22h4v9"></path><path d="M30 6a7 7 0 0 1 7 7c0 5-7 12-7 12s-7-7-7-12a7 7 0 0 1 7-7z" fill="currentColor"></path><circle cx="30" cy="13" r="2.4" fill="#ffffff" stroke="none"></circle></svg>
+      <b id="logo"></b>
+    </a>
+    <div class="divider"></div>
     <nav class="menu" id="menu"></nav>
     <div class="tools">
-            <button class="icon-btn" id="themeBtn" title="테마 전환">🌓</button>
-      <button class="icon-btn" id="burger" title="메뉴">☰</button>
+      <button class="icon-btn" id="themeBtn" title="테마 전환" aria-label="테마 전환">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+      </button>
+      <a class="start-btn" id="startBtn" href="map/index.html">시작하기
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+      </a>
+      <button class="icon-btn" id="burger" title="메뉴" aria-label="메뉴">☰</button>
     </div>
   </div>
 </div>
@@ -215,21 +307,26 @@ if (location.protocol === 'file:') {
   // ================= 콘텐츠 =================
   // ================= 사이트 설정 (여기만 고치면 돼요) =================
   const SITE = {
-    name: '사이트 이름',            // 로고·탭 제목
-    heroTitle: '메인 제목',          // 홈 큰 제목 (<br> 줄바꿈, <em>강조</em> 가능)
-    heroDesc: '메인 설명',
-    searchPlaceholder: '검색어를 입력하세요',
-    menuSecTitle: '메뉴',
-    menuSecDesc: '메뉴 설명',
-    todaySecTitle: '오늘의 팁',
-    todaySecDesc: '랜덤으로 하나씩 보여줘요',
-    footer: '푸터 문구',
+    name: 'DGU홈',                  // 탭 제목
+    logo: 'DGU<span>홈</span>',     // 로고 (<span> 안 글자가 파란색)
+    tagline: '대구대학교의 더 나은 오늘을 위해!',   // 제목 위 손글씨 문구
+    heroTitle: '대구대 자취생활,<br>여기서 <em>더 똑똑하게.</em>',  // 홈 큰 제목 (<br> 줄바꿈, <em>파란 강조</em>)
+    heroDesc: '방 찾기부터 동네 탐색, 자취 꿀팁까지 대구대생을 위한 생활 플랫폼',
+    searchPlaceholder: '어떤 정보가 필요하세요?',
+    menuSecTitle: '대구대 생활을 한곳에서',
+    menuSecDesc: '더 편리한 대학생활을 위한 다양한 서비스를 만나보세요!',
+    todaySecTitle: '지금 많이 찾는 정보',
+    todaySecDesc: '다른 정보 보기',
+    // '지금 많이 찾는 정보' 카드에 돌아가며 쓰는 사진
+    hotPhotos: ['img/photo-store.jpg', 'img/photo-room.jpg', 'img/photo-contract.jpg'],
+    footer: 'DGU홈 · 대구대학교 학생을 위한 생활 플랫폼',
   };
 
   // 메뉴: id(주소용 영문), icon, title, desc, groups(소제목) > tips(t: 제목, d: 내용 HTML)
   const MENUS = [
     {
       id: 'menu1', icon: '📁', title: '메뉴 1', desc: '메뉴 설명',
+      img: 'img/ic-room.jpg', tint: ['#e3eefe', '#f2f7ff'],
       groups: [
       { title: '소제목 1', icon: '📌', tips: [
         { t: '제목', d: '<p>내용</p>' },
@@ -245,6 +342,7 @@ if (location.protocol === 'file:') {
     },
     {
       id: 'menu2', icon: '📁', title: '자취용어', desc: '메뉴 설명',
+      img: 'img/ic-word.jpg', tint: ['#eee9fe', '#f7f4ff'],
       groups: [
       { title: '소제목 1', icon: '📌', tips: [
         { t: '제목', d: '<p>내용</p>' },
@@ -260,6 +358,7 @@ if (location.protocol === 'file:') {
     },
     {
       id: 'menu3', icon: '📁', title: '자취팁', desc: '메뉴 설명',
+      img: 'img/ic-tip.jpg', tint: ['#fef4e2', '#fffaf0'],
       groups: [
       { title: '소제목 1', icon: '📌', tips: [
         { t: '제목', d: '<p>내용</p>' },
@@ -306,12 +405,14 @@ if (location.protocol === 'file:') {
     {
       // link가 있으면 누를 때 그 주소로 이동해요 (자취지도 = map 폴더의 index.html)
       id: 'map', icon: '🗺️', title: '자취지도', desc: '우리 동네 자취 꿀장소를 카카오맵에서 찾고 저장해요',
+      img: 'img/ic-map.jpg', tint: ['#e6f8f0', '#f2fbf7'],
       link: 'map/index.html',
       groups: []
     },
     {
       // 건의사항: 받는 곳(구글 설문지 등)이 정해지면 link: '주소' 를 넣고 soon 줄을 지우면 돼요
       id: 'suggest', icon: '💬', title: '건의사항', desc: '사이트에 바라는 점이나 추가했으면 하는 장소를 알려주세요',
+      tint: ['#fde8ee', '#fff4f7'],
       soon: true,
       groups: []
     },
@@ -340,56 +441,80 @@ if (location.protocol === 'file:') {
   };
 
   // 메뉴
-  $('logo').textContent = SITE.name; $('footText').innerHTML = SITE.footer;
-  $('menu').innerHTML = MENUS.map(m => `<a href="${hrefOf(m)}" data-id="${m.id}">${m.icon} ${m.title}</a>`).join('');
+  $('logo').innerHTML = SITE.logo; $('footText').innerHTML = SITE.footer;
+  $('menu').innerHTML = MENUS.map(m => `<a href="${hrefOf(m)}" data-id="${m.id}">${m.title}</a>`).join('');
+  const ARROW = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>';
+  const CHEV = '<span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m9 6 6 6-6 6"></path></svg></span>';
+  // '지금 많이 찾는 정보' 태그 색 (돌아가며 사용)
+  const TAGS = [['#e3eefe', '#0b4fc6'], ['#dff5e9', '#13774a'], ['#eee9fe', '#5b3fc4']];
   $('burger').onclick = () => $('menu').classList.toggle('open');
 
   // ================= 페이지 =================
   function renderHome() {
-    const pick = ALL[Math.floor(Math.random() * ALL.length)];
     return `
       <section class="hero">
         <div class="container">
-          <h1>${SITE.heroTitle}</h1>
-          <p>${SITE.heroDesc}</p>
-          <div class="search">
-            <input id="q" type="text" placeholder="${esc(SITE.searchPlaceholder)}" autocomplete="off">
-            <div class="search-results" id="results"></div>
+          <div class="hero-text">
+            <div class="tagline">${SITE.tagline}</div>
+            <h1>${SITE.heroTitle}</h1>
+            <p>${SITE.heroDesc}</p>
+            <div class="search">
+              <div class="search-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                <input id="q" type="text" aria-label="검색어" placeholder="${esc(SITE.searchPlaceholder)}" autocomplete="off">
+                <button type="button" id="qBtn">검색</button>
+              </div>
+              <div class="search-results" id="results"></div>
+            </div>
+          </div>
+          <div class="hero-art"><img src="img/hero.jpg" alt="대구대학교 정문과 주변 원룸촌, 카페, 편의점, 버스정류장 일러스트"></div>
+        </div>
+      </section>
+      <section class="block">
+        <div class="container">
+          <div class="sec-head">
+            <h2 class="sec-title">${SITE.menuSecTitle}</h2>
+            <span class="sec-sub">${SITE.menuSecDesc} <span class="arrow">${ARROW}</span></span>
+          </div>
+          <div class="cards">
+            ${MENUS.map(m => `
+              <a class="menu-card" href="${hrefOf(m)}"${m.tint ? ` style="--t1:${m.tint[0]};--t2:${m.tint[1]}"` : ''}>
+                <div class="ic">${m.img ? `<img src="${m.img}" alt="">` : m.icon}</div>
+                <div>
+                  <h3>${m.title}</h3>
+                  <p>${m.desc}</p>
+                  <div class="cnt">${m.soon ? '준비 중' : (m.link ? '바로가기' : countTips(m) + '개')}</div>
+                </div>
+                ${CHEV}
+              </a>`).join('')}
           </div>
         </div>
       </section>
       <section class="block">
         <div class="container">
-          <h2 class="sec-title">${SITE.menuSecTitle}</h2>
-          <p class="sec-sub">${SITE.menuSecDesc}</p>
-          <div class="cards">
-            ${MENUS.map(m => `
-              <a class="menu-card" href="${hrefOf(m)}">
-                <div class="ic">${m.icon}</div>
-                <h3>${m.title}</h3>
-                <p>${m.desc}</p>
-                <div class="cnt">${m.soon ? '준비 중' : (m.link ? '바로가기' : countTips(m) + '개') + ' →'}</div>
-              </a>`).join('')}
+          <div class="sec-head">
+            <h2 class="sec-title">${SITE.todaySecTitle}</h2>
+            <button class="sec-sub" id="another" type="button">${SITE.todaySecDesc} <span class="arrow">${ARROW}</span></button>
           </div>
-        </div>
-      </section>
-      <section class="block" style="padding-top:0">
-        <div class="container">
-          <h2 class="sec-title">${SITE.todaySecTitle}</h2>
-          <p class="sec-sub">${SITE.todaySecDesc}</p>
-          <div class="today" id="today">${todayHtml(pick)}</div>
+          <div class="hot" id="today">${hotHtml()}</div>
         </div>
       </section>`;
   }
-  function todayHtml(p) {
-    return `<div class="ic">${p.m.icon}</div>
-      <div>
-        <div class="label">${p.m.title} · ${p.g.title}</div>
-        <h3>${esc(p.t)}</h3>
-        <p>${esc(strip(p.d))}</p>
-        <button id="another">🔄 다른 팁 보기</button>
-        <a href="#${p.m.id}/${p.gi}-${p.ti}" style="margin-left:6px;font-size:13px;color:var(--accent)">자세히 →</a>
-      </div>`;
+  // 팁 중에서 무작위 3개를 사진 카드로 보여줘요
+  function hotHtml() {
+    const picks = [...ALL].sort(() => Math.random() - .5).slice(0, 3);
+    return picks.map((p, i) => {
+      const [bg, ink] = TAGS[i % TAGS.length];
+      return `<a class="hot-card" href="#${p.m.id}/${p.gi}-${p.ti}">
+          <img src="${SITE.hotPhotos[i % SITE.hotPhotos.length]}" alt="">
+          <div class="txt">
+            <span class="tag" style="background:${bg};color:${ink}">${p.m.title}</span>
+            <h3>${esc(p.t)}</h3>
+            <p>${esc(strip(p.d))}</p>
+          </div>
+          ${CHEV}
+        </a>`;
+    }).join('');
   }
 
   function renderMenu(m) {
@@ -461,11 +586,9 @@ if (location.protocol === 'file:') {
       res.classList.add('show');
     };
     q.onkeydown = e => { if (e.key === 'Enter') res.querySelector('a')?.click(); if (e.key === 'Escape') res.classList.remove('show'); };
+    $('qBtn').onclick = () => { q.oninput(); res.querySelector('a')?.click(); q.focus(); };
     document.addEventListener('click', e => { if (!e.target.closest('.search')) res.classList.remove('show'); }, { once: false });
-    const bindAnother = () => $('another').onclick = () => {
-      $('today').innerHTML = todayHtml(ALL[Math.floor(Math.random() * ALL.length)]); bindAnother();
-    };
-    bindAnother();
+    $('another').onclick = () => { $('today').innerHTML = hotHtml(); };
   }
 
   function bindMenu() {

@@ -6,7 +6,7 @@
 <title>자취지도</title>
 <!-- 앱(홈 화면에 추가) 설정 -->
 <link rel="manifest" href="../manifest.json">
-<meta name="theme-color" content="#ff7a45">
+<meta name="theme-color" content="#0b4fc6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="자취지도">
@@ -14,19 +14,19 @@
 <link rel="icon" href="../icon-192.png">
 <style>
   :root {
-    --bg: #f6f5f2; --panel: #ffffff; --text: #1f2328; --muted: #6b7078; --line: #e4e2dc;
-    --accent: #ff7a45; --accent-weak: #fff1ea; --kakao: #fee500;
+    --bg: #f6f9fe; --panel: #ffffff; --text: #12213f; --muted: #4a5672; --line: #dbe5f5;
+    --accent: #0b4fc6; --accent-weak: #e3eefe; --kakao: #fee500;
     --shadow: 0 6px 24px rgba(0,0,0,.10); --radius: 14px;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #16181c; --panel: #1f2227; --text: #eceef1; --muted: #9aa0a8;
-      --line: #2e3238; --accent: #ff8a5c; --accent-weak: #3a2a22; --shadow: 0 6px 24px rgba(0,0,0,.4);
+      --line: #2e3238; --accent: #6b9bff; --accent-weak: #1a2a52; --shadow: 0 6px 24px rgba(0,0,0,.4);
     }
   }
   :root[data-theme="dark"] {
     --bg: #16181c; --panel: #1f2227; --text: #eceef1; --muted: #9aa0a8;
-    --line: #2e3238; --accent: #ff8a5c; --accent-weak: #3a2a22; --shadow: 0 6px 24px rgba(0,0,0,.4);
+    --line: #2e3238; --accent: #6b9bff; --accent-weak: #1a2a52; --shadow: 0 6px 24px rgba(0,0,0,.4);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
@@ -609,8 +609,8 @@ if (location.protocol === 'file:') {
       homeOv = makeOverlay(hl, hg, '<div class="home-pin">🏡</div>',
         () => openPopup(hl, hg, '<h3>🏡 우리집</h3><div class="meta">점선 원: 반경 500m (도보 약 8분)</div>', true), { yAnchor: .5, z: 6 });
       homeCircle = new kakao.maps.Circle({
-        center: LL(hl, hg), radius: 500, strokeWeight: 2, strokeColor: '#ff7a45', strokeOpacity: .8,
-        strokeStyle: 'dash', fillColor: '#ff7a45', fillOpacity: .06,
+        center: LL(hl, hg), radius: 500, strokeWeight: 2, strokeColor: '#0b4fc6', strokeOpacity: .8,
+        strokeStyle: 'dash', fillColor: '#0b4fc6', fillOpacity: .06,
       });
       homeCircle.setMap(map);
     }
