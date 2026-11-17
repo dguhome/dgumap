@@ -197,6 +197,24 @@
   .tip.hl { animation: hl 1.6s; }
   @keyframes hl { 0%,40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: none; } }
 
+  /* ---------- 자취용어백과 ---------- */
+  .terms-box { max-width: 780px; }
+  .term-search { display: block; width: 100%; font: inherit; font-size: 16px; padding: 14px 22px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--text); outline: none; }
+  .term-search:focus { border-color: var(--accent); }
+  .term-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  .term-chips .chip { border: 1px solid var(--line); background: var(--panel); color: var(--text); font-size: 14.5px; padding: 7px 16px; }
+  .term-chips .chip.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .term-count { font-size: 13px; color: var(--muted); margin: 12px 2px 0; }
+  .term { padding: 20px 4px; border-bottom: 1px solid var(--line); scroll-margin-top: 90px; }
+  .term .hd { display: flex; align-items: center; gap: 10px; }
+  .term h3 { margin: 0; font-size: 18px; letter-spacing: -.3px; }
+  .term .cat { margin-left: auto; flex: none; font-size: 12.5px; font-weight: 600; background: var(--bg2); color: var(--muted); border-radius: 999px; padding: 4px 11px; }
+  .term .d { margin: 8px 0 0; font-size: 15px; }
+  .term .more { margin: 6px 0 0; font-size: 13.5px; color: var(--muted); }
+  .term.hl { animation: hl 1.6s; border-radius: 12px; }
+  .terms .none { color: var(--muted); padding: 24px 4px; }
+  @media (max-width: 600px) { .term h3 { font-size: 16.5px; } .term .d { font-size: 14.5px; } }
+
   /* ---------- 월세 매물 카드 ---------- */
   .room-search { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; }
   .room-search svg { flex: none; color: var(--muted); }
@@ -486,20 +504,62 @@ if (location.protocol === 'file:') {
       ]
     },
     {
-      id: 'menu2', icon: '📁', title: '자취용어', desc: '메뉴 설명',
+      // 자취용어백과: terms 목록에 한 줄씩 추가하면 돼요
+      // w: 용어 / c: 분류(부동산·공과금·생활·집 구조) / d: 한 줄 뜻 / more: 덧붙일 설명(없어도 됨)
+      id: 'menu2', icon: '📖', title: '자취용어백과', desc: '자취 초보를 위한 생활 용어 모음',
       img: 'img/ic-word.jpg', tint: ['#eee9fe', '#f7f4ff'],
-      groups: [
-      { title: '소제목 1', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      { title: '소제목 2', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      ]
+      groups: [],
+      termCats: ['부동산', '공과금', '생활', '집 구조'],
+      terms: [
+        { w: '보증금', c: '부동산', d: '집을 빌릴 때 집주인에게 맡기는 돈.', more: '계약이 끝나고 집을 비우면 돌려받아요. 밀린 월세나 파손이 있으면 그만큼 빼고 받을 수 있어요.' },
+        { w: '월세', c: '부동산', d: '매달 집주인에게 내는 집세.', more: "'보증금 500 / 월 35'는 보증금 500만 원에 매달 35만 원을 낸다는 뜻이에요." },
+        { w: '전세', c: '부동산', d: '큰 보증금을 맡기고 월세 없이 사는 방식.', more: '계약이 끝나면 보증금을 전부 돌려받아요. 금액이 커서 보증금을 지키는 절차(전입신고·확정일자)가 특히 중요해요.' },
+        { w: '반전세', c: '부동산', d: '보증금을 높이는 대신 월세를 낮춘 방식.', more: '전세와 월세의 중간 형태예요.' },
+        { w: '관리비', c: '부동산', d: '건물 청소·공용 전기 등 공동 관리에 매달 내는 돈.', more: '인터넷·수도·TV가 포함되는지는 집마다 달라요. 계약 전에 포함 항목을 꼭 물어보세요.' },
+        { w: '임대인 · 임차인', c: '부동산', d: '임대인은 집을 빌려주는 사람(집주인), 임차인은 빌리는 사람(세입자).' },
+        { w: '임대차계약서', c: '부동산', d: '집을 빌리는 조건(보증금·월세·기간 등)을 적은 계약서.', more: '특약(따로 약속한 내용)도 계약서에 글로 남겨 두는 게 안전해요.' },
+        { w: '계약금', c: '부동산', d: '계약할 때 먼저 내는 돈. 보통 보증금의 10% 정도.', more: '계약 후 내 사정으로 취소하면 돌려받지 못할 수 있어요.' },
+        { w: '가계약금', c: '부동산', d: '정식 계약 전에 방을 잡아두려고 먼저 보내는 돈.', more: '돌려받을 수 있는지 조건을 문자 등 기록으로 남겨 두세요. 등기부등본 확인 전에는 보내지 않는 게 좋아요.' },
+        { w: '확정일자', c: '부동산', d: '임대차계약서의 작성 날짜를 공적으로 확인받는 절차.', more: '주민센터나 인터넷등기소에서 받을 수 있어요. 전입신고와 함께 해 두면 보증금을 먼저 돌려받을 권리(우선변제권)가 생겨요.' },
+        { w: '전입신고', c: '부동산', d: '새로운 거주지로 이사했다는 사실을 신고하는 것.', more: '이사 후 14일 이내에 주민센터나 정부24에서 해요. 보증금을 지키는 첫 단계예요.' },
+        { w: '대항력', c: '부동산', d: '집주인이 바뀌어도 계약 기간 동안 살고 보증금을 요구할 수 있는 권리.', more: '전입신고를 하고 실제로 살고 있으면 그다음 날부터 생겨요.' },
+        { w: '우선변제권', c: '부동산', d: '집이 경매로 넘어가도 보증금을 다른 채권자보다 먼저 받을 수 있는 권리.', more: '대항력(전입신고+거주)과 확정일자를 모두 갖춰야 생겨요.' },
+        { w: '등기부등본', c: '부동산', d: '집의 실제 주인과 대출(근저당) 여부를 확인하는 서류.', more: '정식 이름은 등기사항증명서예요. 인터넷등기소에서 누구나 발급할 수 있어요. 계약하는 사람이 등기부상 주인인지 꼭 확인하세요.' },
+        { w: '근저당', c: '부동산', d: '집을 담보로 잡고 받은 대출.', more: '근저당 금액이 크면 집이 경매로 넘어갈 때 보증금을 다 못 돌려받을 수 있어요.' },
+        { w: '깡통전세', c: '부동산', d: '대출과 보증금을 합친 금액이 집값에 가까워 보증금을 잃을 위험이 큰 집.' },
+        { w: '전세보증보험', c: '부동산', d: '집주인이 보증금을 못 돌려줄 때 보증기관이 대신 돌려주는 보험.' },
+        { w: '중개보수', c: '부동산', d: '공인중개사에게 내는 수수료. 흔히 복비라고 불러요.', more: '거래 금액에 따라 법으로 정한 최대 요율이 있어요.' },
+        { w: '묵시적 갱신', c: '부동산', d: '계약 만료 전에 집주인과 세입자 모두 아무 말이 없으면 같은 조건으로 자동 연장되는 것.', more: '자동 연장된 경우 세입자는 언제든 나가겠다고 알릴 수 있고, 알린 날부터 3개월 뒤에 계약이 끝나요.' },
+        { w: '원상복구', c: '부동산', d: '이사 나갈 때 집을 처음 상태로 돌려놓는 것.', more: '입주할 때 원래 있던 흠집을 사진으로 남겨 두면 나중에 다툼을 줄일 수 있어요.' },
+
+        { w: '공과금', c: '공과금', d: '전기·수도·가스처럼 쓴 만큼 내는 생활 요금.' },
+        { w: '기본요금', c: '공과금', d: '사용량과 관계없이 매달 붙는 요금.' },
+        { w: '누진제', c: '공과금', d: '전기를 많이 쓸수록 단가가 올라가는 요금 방식.', more: '여름·겨울 냉난방기를 오래 쓰면 요금이 크게 뛸 수 있어요.' },
+        { w: '도시가스 · LPG', c: '공과금', d: '도시가스는 배관으로, LPG는 가스통으로 공급되는 가스.', more: 'LPG는 보통 도시가스보다 비싸요. 계약 전에 어떤 가스인지 확인하세요.' },
+        { w: '검침', c: '공과금', d: '계량기를 보고 사용량을 확인하는 것.', more: '입주·퇴실할 때 계량기 숫자를 사진으로 찍어 두면 정산이 편해요.' },
+        { w: '퇴실 정산', c: '공과금', d: '이사 나갈 때 그동안 쓴 공과금·관리비를 계산해 내는 것.' },
+
+        { w: '풀옵션', c: '생활', d: '냉장고·세탁기·에어컨 등 기본 가전과 가구가 갖춰진 방.', more: '어떤 물건이 포함인지 목록으로 확인하고, 고장 시 누가 고치는지도 물어보세요.' },
+        { w: '종량제 봉투', c: '생활', d: '일반 쓰레기를 버릴 때 쓰는 지자체 지정 유료 봉투.', more: '사는 시·군의 봉투를 써야 해요. 편의점·마트에서 팔아요.' },
+        { w: '분리수거', c: '생활', d: '재활용품을 종류별로 나눠 버리는 것.', more: '버리는 요일과 장소는 건물마다 달라요. 입주할 때 집주인에게 물어보세요.' },
+        { w: '음식물 쓰레기', c: '생활', d: '음식 찌꺼기를 따로 모아 버리는 쓰레기.', more: '전용 봉투나 전용 통·카드를 쓰는 방식이 지역마다 달라요.' },
+        { w: '대형폐기물', c: '생활', d: '가구·가전처럼 커서 봉투에 안 들어가는 쓰레기.', more: '구청·주민센터나 인터넷으로 신고하고 스티커(수수료)를 붙여 내놓아요.' },
+        { w: '결로', c: '생활', d: '실내외 온도 차로 벽이나 창문에 물방울이 맺히는 현상.', more: '그대로 두면 곰팡이가 생기기 쉬워요. 자주 환기하고 물기를 닦아 주세요.' },
+        { w: '환기', c: '생활', d: '창문을 열어 실내 공기를 바꾸는 것.', more: '하루 2~3번, 10분 정도만 해도 습기와 냄새를 줄일 수 있어요.' },
+
+        { w: '원룸', c: '집 구조', d: '방·부엌·거실이 한 공간에 있는 집.' },
+        { w: '분리형 원룸', c: '집 구조', d: '방과 부엌 사이에 문이나 벽이 있는 원룸.', more: '1.5룸이라고도 불러요. 요리 냄새가 덜 배요.' },
+        { w: '투룸', c: '집 구조', d: '방이 두 개 있는 집.' },
+        { w: '복층', c: '집 구조', d: '집 안에 계단으로 올라가는 위층 공간이 있는 구조.', more: '공간은 넓어 보이지만 냉난방비가 더 들 수 있어요.' },
+        { w: '오피스텔', c: '집 구조', d: '업무와 주거를 함께 할 수 있게 지은 건물.', more: '관리가 잘 되는 편이지만 관리비가 비싼 경우가 많아요.' },
+        { w: '빌라', c: '집 구조', d: '보통 4층 이하로 지은 다세대·연립 주택을 부르는 말.' },
+        { w: '다가구 주택', c: '집 구조', d: '집주인 한 명이 건물 전체를 갖고 여러 가구에 세를 주는 주택.', more: '같은 건물 다른 세입자들의 보증금도 함께 확인하는 게 좋아요.' },
+        { w: '반지하', c: '집 구조', d: '방의 일부가 땅 아래에 있는 층.', more: '월세는 싸지만 습기·곰팡이·침수에 약해요.' },
+        { w: '옥탑방', c: '집 구조', d: '건물 옥상에 지은 방.', more: '여름엔 덥고 겨울엔 추운 편이에요.' },
+        { w: '전용면적', c: '집 구조', d: '내가 실제로 혼자 쓰는 공간의 넓이.', more: '복도·계단 같은 공용 부분을 더하면 공급면적이에요.' },
+        { w: '평', c: '집 구조', d: '넓이 단위. 1평은 약 3.3㎡.', more: '원룸은 보통 5~8평(약 16~26㎡) 정도예요.' },
+        { w: '채광', c: '집 구조', d: '햇빛이 집 안에 들어오는 정도.', more: '남향이 보통 햇빛이 가장 잘 들어요.' },
+      ],
     },
     {
       id: 'menu3', icon: '📁', title: '자취팁', desc: '메뉴 설명',
@@ -570,9 +630,12 @@ if (location.protocol === 'file:') {
     get(k) { try { return localStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); } catch {} },
   };
-  const ALL = MENUS.flatMap(m => m.groups.flatMap((g, gi) => g.tips.map((t, ti) => ({ ...t, m, g, gi, ti }))));
+  const ALL = MENUS.flatMap(m => [
+    ...m.groups.flatMap((g, gi) => g.tips.map((t, ti) => ({ ...t, m, g, gi, ti, href: `#${m.id}/${gi}-${ti}` }))),
+    ...(m.terms || []).map((x, i) => ({ t: x.w, d: x.d + ' ' + (x.more || ''), m, g: { title: x.c }, href: `#${m.id}/w${i}` })),
+  ]);
   const hrefOf = m => m.link || '#' + m.id;
-  const countTips = m => m.rooms ? m.rooms.length : m.groups.reduce((a, g) => a + g.tips.length, 0);
+  const countTips = m => m.terms ? m.terms.length : m.rooms ? m.rooms.length : m.groups.reduce((a, g) => a + g.tips.length, 0);
 
   // 테마
   const theme = store.get('jachi-theme');
@@ -666,7 +729,7 @@ if (location.protocol === 'file:') {
     const picks = [...ALL].sort(() => Math.random() - .5).slice(0, 3);
     return picks.map((p, i) => {
       const [bg, ink] = TAGS[i % TAGS.length];
-      return `<a class="hot-card" href="#${p.m.id}/${p.gi}-${p.ti}">
+      return `<a class="hot-card" href="${p.href}">
           <img src="${SITE.hotPhotos[i % SITE.hotPhotos.length]}" alt="">
           <div class="txt">
             <span class="tag" style="background:${bg};color:${ink}">${p.m.title}</span>
@@ -676,6 +739,31 @@ if (location.protocol === 'file:') {
           ${CHEV}
         </a>`;
     }).join('');
+  }
+
+  // ---------- 자취용어백과 ----------
+  const termState = { q: '', c: '전체' };
+  function termsHtml(m) {
+    return `
+      <div class="terms-box">
+        <input class="term-search" id="termQ" type="search" placeholder="궁금한 용어 검색하기" aria-label="용어 검색">
+        <div class="term-chips" id="termChips">${['전체', ...m.termCats].map(c => `<button type="button" class="chip" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+        <p class="term-count" id="termCount"></p>
+        <div class="terms" id="terms"></div>
+      </div>`;
+  }
+  function drawTerms(m) {
+    const q = termState.q.trim().toLowerCase(), c = termState.c;
+    const list = m.terms.map((x, i) => ({ ...x, i })).filter(x => (c === '전체' || x.c === c) &&
+      (!q || [x.w, x.d, x.more, x.c].join(' ').toLowerCase().includes(q)));
+    document.querySelectorAll('#termChips .chip').forEach(b => b.classList.toggle('on', b.dataset.c === c));
+    $('termCount').textContent = `용어 ${list.length}개`;
+    $('terms').innerHTML = list.length ? list.map(x => `
+        <div class="term" id="w${x.i}">
+          <div class="hd"><h3>${esc(x.w)}</h3><span class="cat">${esc(x.c)}</span></div>
+          <p class="d">${esc(x.d)}</p>
+          ${x.more ? `<p class="more">${esc(x.more)}</p>` : ''}
+        </div>`).join('') : '<div class="none">찾는 용어가 없어요 😢 다른 말로 검색해 보세요.</div>';
   }
 
   // ---------- 월세 매물 ----------
@@ -732,12 +820,13 @@ if (location.protocol === 'file:') {
           <p>${m.desc}</p>
         </div>
       </section>
-      <div class="container page-body"${m.rooms ? ' style="grid-template-columns:minmax(0,1fr)"' : ''}>
-        <aside class="toc"${m.rooms ? ' style="display:none"' : ''}>
+      <div class="container page-body"${m.rooms || m.terms ? ' style="grid-template-columns:minmax(0,1fr)"' : ''}>
+        <aside class="toc"${m.rooms || m.terms ? ' style="display:none"' : ''}>
           <b>목차</b>
           ${m.groups.map((g, gi) => `<a href="#${m.id}/g${gi}" data-g="${gi}">${g.icon} ${g.title}</a>`).join('')}
         </aside>
         <div>
+          ${m.terms ? termsHtml(m) : ''}
           ${m.rooms ? roomsHtml(m) : ''}
           ${m.soon ? '<div class="group"><p style="color:var(--muted)">🛠️ 준비 중이에요. 곧 열릴 예정이에요!</p></div>' : ''}
           ${m.groups.map((g, gi) => `
@@ -772,7 +861,12 @@ if (location.protocol === 'file:') {
     if (lastMenu !== m.id) { $('app').innerHTML = renderMenu(m); lastMenu = m.id; bindMenu(); if (!sub) scrollTo(0, 0); }
     document.title = `${m.title} · ${SITE.name}`;
 
-    if (sub?.startsWith('g')) {
+    if (sub?.startsWith('w') && m.terms) {
+      // 검색에서 용어를 누르면: 필터를 풀고 그 용어로 이동
+      termState.q = ''; termState.c = '전체'; $('termQ').value = ''; drawTerms(m);
+      const el = document.getElementById(sub);
+      if (el) { el.classList.add('hl'); setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 30); setTimeout(() => el.classList.remove('hl'), 1700); }
+    } else if (sub?.startsWith('g')) {
       document.getElementById(sub)?.scrollIntoView({ behavior: 'smooth' });
     } else if (sub) {
       const el = document.getElementById('t' + sub);
@@ -788,7 +882,7 @@ if (location.protocol === 'file:') {
       if (!v) { res.classList.remove('show'); return; }
       const hits = ALL.filter(x => (x.t + ' ' + strip(x.d) + ' ' + x.g.title + ' ' + x.m.title).toLowerCase().includes(v)).slice(0, 12);
       res.innerHTML = hits.length
-        ? hits.map(x => `<a href="#${x.m.id}/${x.gi}-${x.ti}">${x.m.icon} ${esc(x.t)}<small>${x.m.title} › ${x.g.title}</small></a>`).join('')
+        ? hits.map(x => `<a href="${x.href}">${x.m.icon} ${esc(x.t)}<small>${x.m.title} › ${x.g.title}</small></a>`).join('')
         : '<div class="none">검색 결과가 없어요 😢</div>';
       res.classList.add('show');
     };
@@ -800,6 +894,12 @@ if (location.protocol === 'file:') {
 
   function bindMenu() {
     const m = MENUS.find(x => x.id === lastMenu);
+    if (m?.terms) {
+      $('termQ').value = termState.q;
+      $('termQ').oninput = e => { termState.q = e.target.value; drawTerms(m); };
+      $('termChips').onclick = e => { const b = e.target.closest('.chip'); if (b) { termState.c = b.dataset.c; drawTerms(m); } };
+      drawTerms(m);
+    }
     if (m?.rooms) {
       $('roomQ').value = roomState.q;
       $('roomQ').oninput = e => { roomState.q = e.target.value; drawRooms(m); };
