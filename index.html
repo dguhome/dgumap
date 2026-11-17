@@ -207,7 +207,7 @@
   .term-count { font-size: 13px; color: var(--muted); margin: 12px 2px 0; }
   /* 용어 목록은 상자 안에서 따로 스크롤돼요 (높이는 max-height로 조절) */
   .terms {
-    max-height: 60vh; overflow-y: auto; overscroll-behavior: contain;
+    position: relative; max-height: 60vh; overflow-y: auto; overscroll-behavior: contain;
     background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 0 16px; margin-top: 8px;
     scrollbar-width: thin; scrollbar-color: var(--accent-2) transparent;
   }
@@ -223,7 +223,7 @@
   .term .more { margin: 6px 0 0; font-size: 13.5px; color: var(--muted); }
   .term.hl { animation: hl 1.6s; border-radius: 12px; }
   .terms .none { color: var(--muted); padding: 24px 4px; }
-  @media (max-width: 600px) { .terms { max-height: 65vh; padding: 0 12px; } .term h3 { font-size: 16.5px; } .term .d { font-size: 14.5px; } }
+  @media (max-width: 600px) { .terms { padding: 0 12px; } .term h3 { font-size: 16.5px; } .term .d { font-size: 14.5px; } }
 
   /* ---------- 월세 매물 카드 ---------- */
   .room-search { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; }
@@ -768,14 +768,22 @@ if (location.protocol === 'file:') {
       (!q || [x.w, x.d, x.more, x.c].join(' ').toLowerCase().includes(q)));
     document.querySelectorAll('#termChips .chip').forEach(b => b.classList.toggle('on', b.dataset.c === c));
     $('termCount').textContent = `용어 ${list.length}개`;
-    $('terms').scrollTop = 0;
     $('terms').innerHTML = list.length ? list.map(x => `
         <div class="term" id="w${x.i}">
           <div class="hd"><h3>${esc(x.w)}</h3><span class="cat">${esc(x.c)}</span></div>
           <p class="d">${esc(x.d)}</p>
           ${x.more ? `<p class="more">${esc(x.more)}</p>` : ''}
         </div>`).join('') : '<div class="none">찾는 용어가 없어요 😢 다른 말로 검색해 보세요.</div>';
+    $('terms').scrollTop = 0; fitTerms();
   }
+  // 용어가 5개 정도 보이도록 상자 높이를 맞춰요 (6번째 용어가 살짝 보이면 스크롤할 수 있다는 걸 알 수 있어요)
+  const TERMS_SHOWN = 5;
+  function fitTerms() {
+    const box = $('terms'); if (!box) return;
+    const items = box.querySelectorAll('.term');
+    box.style.maxHeight = items.length > TERMS_SHOWN ? (items[TERMS_SHOWN].offsetTop + 28) + 'px' : 'none';
+  }
+  addEventListener('resize', fitTerms);
 
   // ---------- 월세 매물 ----------
   // 월세/전세 구분: deal을 적거나, 월세(rent)가 0이면 전세로 봐요
