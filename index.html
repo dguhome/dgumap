@@ -197,6 +197,30 @@
   .tip.hl { animation: hl 1.6s; }
   @keyframes hl { 0%,40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: none; } }
 
+  /* ---------- 월세 매물 카드 ---------- */
+  .room-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+  .room-tools input, .room-tools select {
+    font: inherit; font-size: 14px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--text);
+  }
+  .room-tools input { flex: 1; min-width: 160px; }
+  .room-tools .total { font-size: 13.5px; color: var(--muted); margin-left: auto; }
+  .rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .room {
+    display: flex; flex-direction: column; gap: 6px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px; transition: border-color .15s, transform .15s; color: var(--text);
+  }
+  a.room:hover { border-color: var(--accent-2); transform: translateY(-2px); }
+  .room .top { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+  .room .badge { background: var(--accent-weak); color: var(--accent); border-radius: 6px; padding: 2px 8px; font-weight: 600; }
+  .room .badge.sample { background: var(--bg2); color: var(--muted); }
+  .room .price { font-size: 19px; font-weight: 700; letter-spacing: -.4px; }
+  .room h3 { margin: 0; font-size: 15px; }
+  .room .meta { font-size: 13px; color: var(--muted); }
+  .room .memo { font-size: 13px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: auto; }
+  .room .go { font-size: 13px; font-weight: 600; color: var(--accent); }
+  .rooms .none { grid-column: 1 / -1; color: var(--muted); padding: 20px 0; }
+
   .pager { display: flex; justify-content: space-between; gap: 10px; margin-top: 30px; }
   .pager a {
     flex: 1; border: 1px solid var(--line); background: var(--panel); border-radius: 14px; padding: 14px 18px; font-size: 14px;
@@ -479,19 +503,18 @@ if (location.protocol === 'file:') {
       ]
     },
     {
-      id: 'menu4', icon: '📁', title: '월세', desc: '메뉴 설명',
-      groups: [
-      { title: '소제목 1', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      { title: '소제목 2', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      ]
+      // 월세 매물: rooms 목록에 한 줄씩 추가하면 카드가 생겨요 (80개 이상도 OK)
+      // url: 직방 등 매물 주소 / title: 이름 / deposit·rent·fee: 보증금·월세·관리비(만원, 숫자만)
+      // type: 원룸·투룸 등 / area: 전용면적 / floor: 층 / addr: 위치 / memo: 한 줄 메모 / sample: true면 '예시' 표시
+      id: 'menu4', icon: '🏠', title: '월세', desc: '대구대 주변 월세 매물을 한눈에 모아 봤어요',
+      groups: [],
+      rooms: [
+        { url: 'https://www.zigbang.com/home/villa/items/50944727', title: '직방 빌라 매물 #50944727', deposit: null, rent: null, fee: null, type: '빌라', area: '', floor: '', addr: '', memo: '가격·면적은 직방에서 확인 후 채워 주세요' },
+        { url: '', sample: true, title: '예시) 정문 앞 원룸', deposit: 300, rent: 30, fee: 5, type: '원룸', area: '16㎡', floor: '3층', addr: '경산시 진량읍 내리리', memo: '정문 도보 5분 · 풀옵션' },
+        { url: '', sample: true, title: '예시) 신축 투룸', deposit: 500, rent: 45, fee: 7, type: '투룸', area: '33㎡', floor: '2층', addr: '경산시 진량읍 내리리', memo: '2인 자취 추천' },
+        { url: '', sample: true, title: '예시) 저렴한 원룸', deposit: 100, rent: 25, fee: 3, type: '원룸', area: '13㎡', floor: '4층', addr: '경산시 진량읍 문천리', memo: '엘리베이터 없음' },
+        { url: '', sample: true, title: '예시) 복층 오피스텔', deposit: 1000, rent: 40, fee: 10, type: '오피스텔', area: '23㎡', floor: '5층', addr: '경산시 진량읍', memo: '복층 · 주차 가능' },
+      ],
     },
     {
       id: 'menu5', icon: '📁', title: '메뉴 5', desc: '메뉴 설명',
@@ -534,7 +557,7 @@ if (location.protocol === 'file:') {
   };
   const ALL = MENUS.flatMap(m => m.groups.flatMap((g, gi) => g.tips.map((t, ti) => ({ ...t, m, g, gi, ti }))));
   const hrefOf = m => m.link || '#' + m.id;
-  const countTips = m => m.groups.reduce((a, g) => a + g.tips.length, 0);
+  const countTips = m => m.rooms ? m.rooms.length : m.groups.reduce((a, g) => a + g.tips.length, 0);
 
   // 테마
   const theme = store.get('jachi-theme');
@@ -640,6 +663,44 @@ if (location.protocol === 'file:') {
     }).join('');
   }
 
+  // ---------- 월세 매물 ----------
+  const won = v => v == null || v === '' ? '?' : (v >= 10000 ? (v / 10000).toLocaleString() + '억' : v.toLocaleString());
+  function roomCard(r) {
+    const tag = r.url ? 'a' : 'div';
+    const attr = r.url ? ` href="${esc(r.url)}" target="_blank" rel="noopener"` : '';
+    const meta = [r.area, r.floor, r.addr].filter(Boolean).map(esc).join(' · ');
+    return `<${tag} class="room"${attr}>
+        <div class="top">${r.type ? `<span class="badge">${esc(r.type)}</span>` : ''}${r.sample ? '<span class="badge sample">예시</span>' : ''}</div>
+        <div class="price">월세 ${won(r.deposit)} / ${won(r.rent)}</div>
+        <h3>${esc(r.title || '매물')}</h3>
+        <div class="meta">관리비 ${r.fee == null ? '?' : won(r.fee) + '만'}${meta ? ' · ' + meta : ''}</div>
+        ${r.memo ? `<div class="memo">${esc(r.memo)}</div>` : ''}
+        <div class="go">${r.url ? '매물 보러가기 ↗' : '링크 준비 중'}</div>
+      </${tag}>`;
+  }
+  function roomsHtml(m) {
+    const types = [...new Set(m.rooms.map(r => r.type).filter(Boolean))];
+    return `
+      <div class="room-tools">
+        <input id="roomQ" type="search" placeholder="이름·위치·메모로 찾기" aria-label="매물 검색">
+        <select id="roomType" aria-label="방 종류"><option value="">전체 종류</option>${types.map(t => `<option>${esc(t)}</option>`).join('')}</select>
+        <select id="roomSort" aria-label="정렬">
+          <option value="">등록순</option><option value="rent">월세 낮은순</option><option value="deposit">보증금 낮은순</option>
+        </select>
+        <span class="total" id="roomTotal"></span>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 12px">가격은 보증금/월세 (만원) 기준이에요. 실제 조건은 매물 링크에서 꼭 다시 확인하세요.</p>
+      <div class="rooms" id="rooms"></div>`;
+  }
+  function drawRooms(m) {
+    const q = ($('roomQ').value || '').trim().toLowerCase(), type = $('roomType').value, sort = $('roomSort').value;
+    let list = m.rooms.filter(r => (!type || r.type === type) &&
+      (!q || [r.title, r.addr, r.memo, r.type].join(' ').toLowerCase().includes(q)));
+    if (sort) list = [...list].sort((a, b) => (a[sort] ?? Infinity) - (b[sort] ?? Infinity));
+    $('roomTotal').textContent = `총 ${list.length}개`;
+    $('rooms').innerHTML = list.length ? list.map(roomCard).join('') : '<div class="none">조건에 맞는 매물이 없어요 😢</div>';
+  }
+
   function renderMenu(m) {
     const i = MENUS.indexOf(m), prev = MENUS[i - 1], next = MENUS[i + 1];
     return `
@@ -650,12 +711,13 @@ if (location.protocol === 'file:') {
           <p>${m.desc}</p>
         </div>
       </section>
-      <div class="container page-body">
-        <aside class="toc">
+      <div class="container page-body"${m.rooms ? ' style="grid-template-columns:1fr"' : ''}>
+        <aside class="toc"${m.rooms ? ' style="display:none"' : ''}>
           <b>목차</b>
           ${m.groups.map((g, gi) => `<a href="#${m.id}/g${gi}" data-g="${gi}">${g.icon} ${g.title}</a>`).join('')}
         </aside>
         <div>
+          ${m.rooms ? roomsHtml(m) : ''}
           ${m.soon ? '<div class="group"><p style="color:var(--muted)">🛠️ 준비 중이에요. 곧 열릴 예정이에요!</p></div>' : ''}
           ${m.groups.map((g, gi) => `
             <div class="group" id="g${gi}">
@@ -716,6 +778,8 @@ if (location.protocol === 'file:') {
   }
 
   function bindMenu() {
+    const m = MENUS.find(x => x.id === lastMenu);
+    if (m?.rooms) { ['roomQ', 'roomType', 'roomSort'].forEach(id => $(id).oninput = () => drawRooms(m)); drawRooms(m); }
     document.querySelectorAll('.tip').forEach(d => d.addEventListener('toggle', () => d.classList.toggle('open', d.open)));
     // 목차 클릭 시 해시를 바꾸지 않고 부드럽게 스크롤
     document.querySelectorAll('.toc a').forEach(a => a.onclick = e => {
