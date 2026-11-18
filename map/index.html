@@ -318,6 +318,34 @@
   .pop .grp div:hover { background: var(--bg); }
   .pop .grp b { color: var(--dc); white-space: nowrap; }
 
+  /* ---------- 편의·공공시설 버튼 줄 ---------- */
+  .facbar {
+    position: absolute; top: 12px; left: 12px; right: 150px; z-index: 600; display: flex; gap: 6px;
+    overflow-x: auto; scrollbar-width: none; padding: 2px;
+  }
+  .facbar::-webkit-scrollbar { display: none; }
+  .fchip {
+    flex: none; border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 999px;
+    padding: 7px 12px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.12); white-space: nowrap;
+  }
+  .fchip.on { background: var(--fc); border-color: var(--fc); color: #fff; }
+  .fchip b { background: rgba(255,255,255,.3); border-radius: 999px; padding: 0 6px; margin-left: 2px; font-size: 11.5px; }
+  .fchip.off { color: var(--muted); }
+  .fac-hint {
+    position: absolute; top: 56px; left: 50%; transform: translateX(-50%); z-index: 600; background: var(--text); color: var(--panel);
+    padding: 7px 14px; border-radius: 999px; font-size: 12.5px; box-shadow: var(--shadow); white-space: nowrap;
+  }
+  .fac-hint[hidden] { display: none; }
+  .fdot { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .fdot span {
+    width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 2px solid var(--fc); display: grid; place-items: center;
+    font-size: 13px; box-shadow: 0 2px 5px rgba(0,0,0,.25); flex: none;
+  }
+  .fdot:hover span { transform: scale(1.15); }
+  .fdot em {
+    font-style: normal; font-size: 11.5px; font-weight: 700; background: rgba(255,255,255,.92); color: #191919;
+    padding: 1px 6px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.2); white-space: nowrap; max-width: 130px; overflow: hidden; text-overflow: ellipsis;
+  }
   /* ---------- Mobile ---------- */
   #toggleList { display: none; }
   @media (max-width: 760px) {
@@ -337,7 +365,9 @@
     .pop { width: 230px; }
     .pop.room { width: 260px; }
     .pop.room .ph { height: 120px; }
-    .legend { bottom: auto; top: 12px; left: 12px; font-size: 11px; padding: 6px 9px; }
+    .legend { bottom: auto; top: 58px; left: 12px; font-size: 11px; padding: 6px 9px; }
+    .facbar { right: 128px; }
+    .fac-hint { top: 100px; }
     .legend small { display: none; }
   }
 </style>
@@ -416,6 +446,8 @@
 <main id="mapWrap">
   <div id="map"></div>
   <div class="banner" id="banner"></div>
+  <div class="facbar" id="facBar"></div>
+  <div class="fac-hint" id="facHint" hidden></div>
   <div class="legend rooms-only" id="legend">
     <div class="d-sg"><i></i>사글세 (한 번에 내는 돈)</div>
     <div class="d-js"><i></i>전세</div>
@@ -598,12 +630,14 @@ if (location.protocol === 'file:') {
       const ct = map.getCenter();
       state.view = { center: [ct.getLat(), ct.getLng()], lv: map.getLevel() }; persist();
       scheduleHouses();
+      scheduleFacil();
       renderRooms();
     });
     kakao.maps.event.addListener(map, 'click', e => onMapClick(e.latLng.getLat(), e.latLng.getLng()));
     render();
     loadHouses();
     initRooms();
+    loadFacil();
   }
 
   // 마커(커스텀 오버레이) 만들기
@@ -1327,6 +1361,111 @@ if (location.protocol === 'file:') {
     renderRoomUI();
   }
 
+  // ================= 편의·공공시설 레이어 (카카오 장소 검색) =================
+  // code: 카카오 카테고리 코드 / q: 카테고리가 없으면 키워드로 찾아요
+  const FACIL = {
+    conv:   { label: '편의점',   emoji: '🏪', color: '#4f8cff', code: 'CS2' },
+    mart:   { label: '마트',     emoji: '🛒', color: '#2bb673', code: 'MT1' },
+    food:   { label: '음식점',   emoji: '🍚', color: '#ff7a45', code: 'FD6' },
+    cafe:   { label: '카페',     emoji: '☕', color: '#a0703c', code: 'CE7' },
+    pharm:  { label: '약국',     emoji: '💊', color: '#e5484d', code: 'PM9' },
+    hosp:   { label: '병원',     emoji: '🏥', color: '#d6336c', code: 'HP8' },
+    bank:   { label: '은행·ATM', emoji: '🏦', color: '#3d5a80', code: 'BK9' },
+    public: { label: '공공기관', emoji: '🏛️', color: '#495057', code: 'PO3' },
+    laundry:{ label: '빨래방',   emoji: '🧺', color: '#00b5c8', q: '빨래방' },
+    gym:    { label: '헬스장',   emoji: '💪', color: '#8e5cf7', q: '헬스장' },
+    daiso:  { label: '다이소',   emoji: '🧴', color: '#f08c00', q: '다이소' },
+    park:   { label: '주차장',   emoji: '🅿️', color: '#1c7ed6', code: 'PK6' },
+  };
+  const FACIL_MAX_LEVEL = 5;            // 이보다 축소하면 너무 많아서 숨겨요
+  if (!Array.isArray(state.facil)) state.facil = ['conv'];
+  let facilOvs = [], facilTimer = null, facilToken = 0, facilCount = {};
+
+  function renderFacilBar() {
+    const bar = $('facBar');
+    const tooFar = map && map.getLevel() > FACIL_MAX_LEVEL && state.facil.length;
+    bar.innerHTML = Object.entries(FACIL).map(([k, f]) => {
+      const on = state.facil.includes(k), n = facilCount[k];
+      return `<button class="fchip ${on ? 'on' : ''}" data-k="${k}" style="--fc:${f.color}">${f.emoji} ${f.label}${on && n != null && !tooFar ? ` <b>${n >= 45 ? '45+' : n}</b>` : ''}</button>`;
+    }).join('') + (state.facil.length ? '<button class="fchip off" data-k="__off">✕ 모두 끄기</button>' : '');
+    $('facHint').textContent = tooFar ? '🔍 지도를 확대하면 시설이 보여요' : '';
+    $('facHint').hidden = !tooFar;
+  }
+  $('facBar').onclick = e => {
+    const b = e.target.closest('.fchip'); if (!b) return;
+    const k = b.dataset.k;
+    if (k === '__off') state.facil = [];
+    else state.facil = state.facil.includes(k) ? state.facil.filter(x => x !== k) : [...state.facil, k];
+    persist(); loadFacil();
+  };
+  // 버튼 줄에서 마우스 휠로 가로 스크롤
+  $('facBar').addEventListener('wheel', e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { $('facBar').scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
+
+  function clearFacil() { facilOvs.forEach(o => o.setMap(null)); facilOvs = []; }
+  function scheduleFacil() { clearTimeout(facilTimer); facilTimer = setTimeout(loadFacil, 450); }
+
+  function loadFacil() {
+    if (!map) return renderFacilBar();
+    const token = ++facilToken;
+    if (!state.facil.length || map.getLevel() > FACIL_MAX_LEVEL) { clearFacil(); facilCount = {}; return renderFacilBar(); }
+    const S = kakao.maps.services.Status, bounds = map.getBounds();
+    const found = {}, keys = [...state.facil];
+    let left = keys.length;
+    keys.forEach(k => {
+      const f = FACIL[k], list = found[k] = [];
+      const done = () => { if (token === facilToken && --left === 0) drawFacil(found); };
+      const cb = (data, status, pg) => {
+        if (token !== facilToken) return;
+        if (status === S.OK) {
+          list.push(...data);
+          if (pg && pg.hasNextPage && pg.current < 3) return pg.nextPage();
+        }
+        done();
+      };
+      if (f.code) places.categorySearch(f.code, cb, { bounds });
+      else places.keywordSearch(f.q, cb, { bounds });
+    });
+  }
+
+  function drawFacil(found) {
+    clearFacil(); facilCount = {};
+    const lv = map.getLevel(), mine = savedKakaoIds(), seen = new Set();
+    Object.entries(found).forEach(([k, list]) => {
+      const f = FACIL[k];
+      facilCount[k] = list.length;
+      list.forEach(r => {
+        if (seen.has(r.id) || mine.has(r.id)) return;   // 겹치는 곳·내 장소는 한 번만
+        seen.add(r.id);
+        const lat = +r.y, lng = +r.x;
+        facilOvs.push(makeOverlay(lat, lng,
+          `<div class="fdot" style="--fc:${f.color}" title="${esc(r.place_name)}"><span>${f.emoji}</span>${lv <= 2 ? `<em>${esc(r.place_name)}</em>` : ''}</div>`,
+          () => openPopup(lat, lng, facilPopupHtml(r, f), true), { yAnchor: .5, xAnchor: lv <= 2 ? .1 : .5, z: 3 }));
+      });
+    });
+    renderFacilBar();
+  }
+
+  function facilPopupHtml(r, f) {
+    const pt = [+r.y, +r.x];
+    const sel = typeof selRoom !== 'undefined' && selRoom ? ROOMS.find(x => x.id === selRoom) : null;
+    const dists = [
+      state.home ? `🏡 우리집에서 ${fmtDist(haversine(state.home, pt))} · 도보 ${walkMin(haversine(state.home, pt))}분` : '',
+      sel ? `🏠 ${esc(sel.title)}에서 ${fmtDist(haversine([sel.lat, sel.lng], pt))}` : '',
+    ].filter(Boolean);
+    popupR = r;
+    const cat = (r.category_name || '').split(' > ').pop();
+    return `<h3>${f.emoji} ${esc(r.place_name)}</h3>
+      <div class="meta">${esc(cat || f.label)}</div>
+      <div class="addr">📍 ${esc(r.road_address_name || r.address_name)}</div>
+      ${dists.map(d => `<div class="addr">${d}</div>`).join('')}
+      <div class="links">
+        ${r.phone ? `<a href="tel:${esc(r.phone)}">📞 ${esc(r.phone)}</a>` : ''}
+        <a href="${esc(r.place_url)}" target="_blank" rel="noopener">카카오맵 상세 ↗</a>
+        <a href="https://map.kakao.com/link/to/${encodeURIComponent(r.place_name)},${r.y},${r.x}" target="_blank" rel="noopener">길찾기 ↗</a>
+      </div>
+      <div class="btns"><button class="kakao" data-act="addres">＋ 내 장소에 저장</button></div>`;
+  }
+
   function initRooms() {
     findGates();
     renderRooms();
@@ -1334,6 +1473,7 @@ if (location.protocol === 'file:') {
   }
 
   render();
+  renderFacilBar();
   loadKakao();
 })();
 </script>
