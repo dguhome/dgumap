@@ -673,17 +673,22 @@ if (location.protocol === 'file:') {
     {
       // 월세 매물: rooms 목록에 한 줄씩 추가하면 카드가 생겨요 (80개 이상도 OK)
       // url: 직방 등 매물 주소 / title: 이름 / deposit·rent·fee: 보증금·월세·관리비(만원, 숫자만)
-      // type: 원룸·투룸 등 / walk: 학교까지 도보 분 / img: 사진 주소(img/ 폴더나 링크) / addr: 위치 / memo: 검색용 메모 / sample: true면 '예시' 표시
+      // type: 원룸·투룸 등 / town: 평사·내리리 / walk: 학교까지 도보 분 / img: 사진 주소(img/ 폴더나 링크) / addr: 위치 / memo: 검색용 메모 / sample: true면 '예시' 표시
       id: 'menu4', icon: '🏠', title: '월세', desc: '대구대 주변 월세 매물을 한눈에 모아 봤어요',
       groups: [],
       rooms: [
-        // 사글세: deal: '사글세', lump: 한 번에 내는 금액, months: 몇 달치인지 (rent는 한 달로 나눈 값, 정렬용)
-        { url: 'https://www.zigbang.com/home/oneroom/items/51040254', title: '두두빌 분리형 원룸', deal: '사글세', deposit: 20, lump: 420, months: 10, rent: 42, fee: 3, type: '원룸', walk: null, img: 'https://ic.zigbang.com/ic/items/51040254/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 94-14', memo: '정문 종점 앞 · 4층/5층 · 엘리베이터 · 리모델링 · 7평(23㎡) · 풀옵션 · 주차 가능 · 12/20 이후 입주' },
-        { url: 'https://www.zigbang.com/home/villa/items/50944727', title: '개별형 투룸 (화장실 2개)', deposit: 8000, rent: 0, fee: 7, type: '투룸', walk: null, img: 'https://ic.zigbang.com/ic/items/50944727/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 249-14', memo: '빌라 · 4층/4층 · 에어컨 3대 · 15평(51㎡) · 풀옵션 · 주차 가능 · 12/19 이후 입주' },
-        { url: '', sample: true, title: '예시) 정문 앞 원룸', deposit: 300, rent: 30, fee: 5, type: '원룸', walk: 5, addr: '경산시 진량읍 내리리', memo: '정문 도보 5분 · 풀옵션' },
-        { url: '', sample: true, title: '예시) 신축 투룸', deposit: 500, rent: 45, fee: 7, type: '투룸', walk: 10, addr: '경산시 진량읍 내리리', memo: '2인 자취 추천' },
-        { url: '', sample: true, title: '예시) 저렴한 원룸', deposit: 100, rent: 25, fee: 3, type: '원룸', walk: 15, addr: '경산시 진량읍 문천리', memo: '엘리베이터 없음' },
-        { url: '', sample: true, title: '예시) 복층 오피스텔', deposit: 1000, rent: 40, fee: 10, type: '오피스텔', walk: 12, addr: '경산시 진량읍', memo: '복층 · 주차 가능' },
+        // 사글세: deal: '사글세', lump: 한 번에 내는 금액, months: 몇 달치인지(모르면 비워 두기)
+        // town: 평사 / 내리리 (주소의 '리' 기준)
+        { url: 'https://www.zigbang.com/home/oneroom/items/51040254', title: '두두빌 분리형 원룸', town: '내리리', deal: '사글세', deposit: 20, lump: 370, months: 10, fee: 3, type: '원룸', walk: null, img: 'https://ic.zigbang.com/ic/items/51040254/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 94-14', memo: '정문 종점 앞 · 4층/5층 · 엘리베이터 · 리모델링 · 7평(23㎡) · 풀옵션 · 주차 가능 · 12/20 이후 입주 · 총 420만(보증금·관리비 포함)' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/51040229', title: '별이야기 분리형 원룸', town: '내리리', deal: '사글세', deposit: 20, lump: 350, months: 10, fee: 3, type: '원룸', walk: 5, img: 'https://ic.zigbang.com/ic/items/51040229/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 82-4', memo: '정문 5분 · 버스종점 3분 · 편의점 1분 · 3층/4층 · 7평(23㎡) · 풀옵션 · 무료 주차 · 12/20 이후 입주 · 1층은 사글세 320 · 전세 4000도 가능 · 투룸도 있음' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/51176808', title: '동양빌 분리형 원룸', town: '내리리', deal: '사글세', deposit: 20, lump: 370, months: null, fee: 3, type: '원룸', walk: null, img: 'https://ic.zigbang.com/ic/items/51176808/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 82-8', memo: '정문 종점 앞 · 롯데마트·GS25 근처 · 4층/4층 · 8평(26㎡) · 도배·가구 교체 중 · 주인 직접 관리 · 여학생 선호 · 무료 주차 · 12/20 이후 입주 · 1층은 사글세 330' },
+        { url: 'https://www.zigbang.com/home/villa/items/50944727', title: '개별형 투룸 (화장실 2개)', town: '내리리', deposit: 8000, rent: 0, fee: 7, type: '투룸', walk: null, img: 'https://ic.zigbang.com/ic/items/50944727/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 249-14', memo: '빌라 · 향토기숙사 쪽 · 법대·사범대·미대·행정대 가까움 · 4층/4층 · 에어컨 3대 · 15평(51㎡) · 풀옵션 · 주차 가능 · 12/19 이후 입주' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/51040213', title: '하늘채 나동 분리형 원룸', town: '평사', deal: '사글세', deposit: 20, lump: 300, months: null, fee: 3, type: '원룸', walk: 5, img: 'https://ic.zigbang.com/ic/items/51040213/1.jpg?w=600&h=450', addr: '경산시 진량읍 평사리 489', memo: '정문 5분 · 롯데마트 1분 · 버스종점 3분 · 2층/3층 · 8평(27㎡) · 풀옵션 · 무료 주차 · 12/20 이후 입주 · 큰방은 사글세 320 · 관리비 30 일시불' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/50940028', title: '시그니엘 원룸', town: '평사', deposit: 4000, rent: 0, fee: 3, type: '원룸', walk: null, img: 'https://ic.zigbang.com/ic/items/50940028/1.jpg?w=600&h=450', addr: '경산시 진량읍 평사리 430-20', memo: '정문 종점 · 23년 리뉴얼 · 1층/3층 · 6평(20㎡) · 풀옵션 · 인덕션 · 무료 주차 · 12/15 이후 입주(협의) · 관리비 40/1년 · 사글세 400(10달)도 가능' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/50996135', title: '정문 근처 분리형 원룸', town: '평사', deposit: 5000, rent: 0, fee: 4, type: '원룸', walk: 5, img: 'https://ic.zigbang.com/ic/items/50996135/1.jpg?w=600&h=450', addr: '경산시 진량읍 평사리 430-27', memo: '정문 도보 5분 · 남향 · 3층/4층 · 7평(24㎡) · 풀옵션 · 주차 가능 · 즉시 입주 · 관리비 50/1년' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/50969475', title: '정문 가까운 분리형 원룸', town: '평사', deal: '사글세', deposit: 20, lump: 370, months: null, fee: 3, type: '원룸', walk: null, img: 'https://ic.zigbang.com/ic/items/50969475/1.jpg?w=600&h=450', addr: '경산시 진량읍 평사리 430-1', memo: '남향 · 넓은 방 · 2층/4층 · 7평(23㎡) · 풀옵션 · 주차 넓음 · 즉시 입주' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/50969261', title: '로즈밸리A 원룸', town: '평사', deal: '사글세', deposit: 20, lump: 430, months: null, fee: 3, type: '원룸', walk: 7, img: 'https://ic.zigbang.com/ic/items/50969261/1.jpg?w=600&h=450', addr: '경산시 진량읍 평사리 430-2', memo: '정문 도보 7분 · 조용함 · 오픈형 · 3층/4층 · 8평(25㎡) · 풀옵션 · 주차 가능 · 12/20 이후 입주' },
+        { url: 'https://www.zigbang.com/home/oneroom/items/50969568', title: '하얀집 원룸 (가성비)', town: '평사', deal: '사글세', deposit: 20, lump: 240, months: null, fee: 2, type: '원룸', walk: null, img: 'https://ic.zigbang.com/ic/items/50969568/1.jpg?w=600&h=450', addr: '경산시 진량읍 평사리 430-19', memo: '남향 · 가격 대비 넓은 방 · 오픈형 · 3층/3층 · 7평(23㎡) · 풀옵션 · 주차 가능 · 즉시 입주' },
       ],
     },
     {
@@ -975,23 +980,26 @@ if (location.protocol === 'file:') {
   // 월세/전세 구분: deal을 적거나, 월세(rent)가 0이면 전세로 봐요
   const dealOf = r => r.deal || (r.rent === 0 ? '전세' : '월세');
   const won = v => v == null || v === '' ? '?' : (v >= 10000 ? (v / 10000).toLocaleString() + '억' : v.toLocaleString());
+  // 한 달 기준 금액: 사글세는 한 번에 내는 돈을 달 수(모르면 10달)로 나눠서 비교해요
+  const perMonth = r => dealOf(r) === '사글세' ? (r.lump ? r.lump / (r.months || 10) : null) : r.rent;
   const ROOM_SORTS = [['', '등록순'], ['rent', '월세 낮은순'], ['deposit', '보증금 낮은순'], ['walk', '가까운순'], ['fee', '관리비 낮은순']];
-  const roomState = { q: '', type: '', sort: '' };
+  const roomState = { q: '', type: '', town: '', sort: '' };
   function roomCard(r) {
     const tag = r.url ? 'a' : 'div';
     const attr = r.url ? ` href="${esc(r.url)}" target="_blank" rel="noopener"` : '';
-    const meta = [dealOf(r) === '사글세' && r.rent ? `한 달 약 ${won(r.rent)}만` : '', r.walk != null && r.walk !== '' ? `학교까지 도보 ${esc(r.walk)}분` : '', r.fee != null ? `관리비 ${won(r.fee)}만` : '']
+    const meta = [dealOf(r) === '사글세' && r.lump && r.months ? `한 달 약 ${won(Math.round(r.lump / r.months))}만` : '', r.walk != null && r.walk !== '' ? `학교까지 도보 ${esc(r.walk)}분` : '', r.fee != null ? `관리비 ${won(r.fee)}만` : '']
       .filter(Boolean).map(t => `<span>${t}</span>`).join(' · ') || esc(r.addr || '');
     return `<${tag} class="room"${attr}>
         <div class="ph">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy">` : '🏠'}${r.sample ? '<span class="sample">예시</span>' : ''}</div>
         <h3>${esc(r.title || '매물')}</h3>
         <div class="price">${dealOf(r) === '전세' ? `전세 ${won(r.deposit)}` : dealOf(r) === '사글세' ? `보증금 ${won(r.deposit)} / 사글세 ${won(r.lump)}${r.months ? ` (${esc(r.months)}달)` : ''}` : `보증금 ${won(r.deposit)} / 월 ${won(r.rent)}`}</div>
         ${meta ? `<div class="meta">${meta}</div>` : ''}
-        <div class="foot">${r.type ? `<span class="tag">${esc(r.type)}</span>` : ''}${r.url ? '<span class="go">보러가기 ↗</span>' : ''}</div>
+        <div class="foot">${r.town ? `<span class="tag">📍 ${esc(r.town)}</span>` : ''}${r.type ? `<span class="tag">${esc(r.type)}</span>` : ''}${r.url ? '<span class="go">보러가기 ↗</span>' : ''}</div>
       </${tag}>`;
   }
   function roomsHtml(m) {
     const types = [...new Set(m.rooms.map(r => r.type).filter(Boolean))];
+    const towns = [...new Set(m.rooms.map(r => r.town).filter(Boolean))];
     return `
       <label class="room-search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -1001,16 +1009,18 @@ if (location.protocol === 'file:') {
       <div class="room-filter">
         <b>검색 및 필터</b>
         <div class="row" id="roomTypes">${['', ...types, '월세', '전세', ...(m.rooms.some(r => dealOf(r) === '사글세') ? ['사글세'] : [])].map(t => `<button type="button" class="chip${t === roomState.type ? ' on' : ''}" data-type="${esc(t)}">${t ? esc(t) : '전체'}</button>`).join('')}</div>
+        ${towns.length > 1 ? `<div class="row" id="roomTowns">${['', ...towns].map(t => `<button type="button" class="chip${t === roomState.town ? ' on' : ''}" data-town="${esc(t)}">${t ? '📍 ' + esc(t) : '전체 동네'}</button>`).join('')}</div>` : ''}
         <div class="row sort" id="roomSorts">${ROOM_SORTS.map(([k, l]) => `<button type="button" class="chip${k === roomState.sort ? ' on' : ''}" data-sort="${k}">${l}</button>`).join('')}</div>
       </div>
       <div class="rooms" id="rooms"></div>
       <p style="font-size:12.5px;color:var(--muted);margin:14px 0 0">가격은 만원 기준이에요. 실제 조건은 매물 링크에서 꼭 다시 확인하세요.</p>`;
   }
   function drawRooms(m) {
-    const q = roomState.q.trim().toLowerCase(), { type, sort } = roomState;
-    let list = m.rooms.filter(r => (!type || r.type === type || dealOf(r) === type) &&
-      (!q || [r.title, r.addr, r.memo, r.type].join(' ').toLowerCase().includes(q)));
-    if (sort) list = [...list].sort((a, b) => (a[sort] ?? Infinity) - (b[sort] ?? Infinity));
+    const q = roomState.q.trim().toLowerCase(), { type, town, sort } = roomState;
+    let list = m.rooms.filter(r => (!type || r.type === type || dealOf(r) === type) && (!town || r.town === town) &&
+      (!q || [r.title, r.addr, r.memo, r.type, r.town, dealOf(r)].join(' ').toLowerCase().includes(q)));
+    const val = (r, k) => (k === 'rent' ? perMonth(r) : r[k]) ?? Infinity;
+    if (sort) list = [...list].sort((a, b) => val(a, sort) - val(b, sort));
     $('roomTotal').textContent = `${list.length}개 매물`;
     $('rooms').innerHTML = list.length ? list.map(roomCard).join('') : '<div class="none">조건에 맞는 매물이 없어요 😢</div>';
   }
@@ -1110,13 +1120,13 @@ if (location.protocol === 'file:') {
     if (m?.rooms) {
       $('roomQ').value = roomState.q;
       $('roomQ').oninput = e => { roomState.q = e.target.value; drawRooms(m); };
-      const pick = (box, key) => $(box).onclick = e => {
+      const pick = (box, key) => $(box) && ($(box).onclick = e => {
         const b = e.target.closest('.chip'); if (!b) return;
         roomState[key] = b.dataset[key];
         $(box).querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === b));
         drawRooms(m);
-      };
-      pick('roomTypes', 'type'); pick('roomSorts', 'sort');
+      });
+      pick('roomTypes', 'type'); pick('roomTowns', 'town'); pick('roomSorts', 'sort');
       drawRooms(m);
     }
     document.querySelectorAll('.tip').forEach(d => d.addEventListener('toggle', () => d.classList.toggle('open', d.open)));
