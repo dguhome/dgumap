@@ -303,6 +303,51 @@
   .room .meta { font-size: 13.5px; color: var(--muted); }
   .room .meta span { white-space: nowrap; }
   .room .foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+  .calc-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .calc-box { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .calc-box[hidden] { display: none; }
+  .calc-in { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .calc-in label, .calc-in .full { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .calc-in [hidden] { display: none; }
+  .calc-in .full { grid-column: 1 / -1; }
+  .calc-in .lbl { font-size: 13px; }
+  .calc-in .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .calc-in .chip { background: var(--bg); }
+  .calc-in .chip.on { background: var(--accent); }
+  .calc-in .u { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; color: var(--muted); font-weight: 500; }
+  .calc-in .u:focus-within { border-color: var(--accent); }
+  .calc-in .u { white-space: nowrap; }
+  .calc-in .u input { flex: 1; }
+  .calc-in .hint { font-weight: 400; }
+  .calc-in input, .calc-in select { font: inherit; font-size: 16px; font-weight: 700; color: var(--text); border: 0; outline: 0; background: transparent; padding: 9px 0; width: 100%; min-width: 0; }
+  .calc-in select { font-size: 14px; font-weight: 500; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; }
+  .calc-out { background: var(--accent-weak); border-radius: 16px; padding: 18px; position: sticky; top: 84px; }
+  .calc-out.wide { grid-column: 1 / -1; position: static; background: var(--panel); border: 1px solid var(--line); }
+  .calc-box[data-pane="cmp"] { grid-template-columns: minmax(0, 1fr); }
+  .calc-out .big small { display: block; font-size: 13px; color: var(--muted); }
+  .calc-out .big b { display: block; font-size: 32px; color: var(--accent); letter-spacing: -0.5px; margin: 2px 0 12px; }
+  .calc-out .bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--panel); }
+  .calc-out .bar i { display: block; height: 100%; }
+  .calc-out .leg { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12.5px; margin: 8px 0 12px; }
+  .calc-out .leg i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; }
+  .calc-out dl { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; margin: 0 0 10px; font-size: 14px; }
+  .calc-out dt { color: var(--muted); } .calc-out dd { margin: 0; font-weight: 700; text-align: right; }
+  .calc-out p { font-size: 14px; line-height: 1.6; }
+  .hint { display: block; font-size: 12px; color: var(--muted); font-weight: 400; line-height: 1.55; }
+  .calc-foot { font-size: 13px; color: var(--muted); margin: 16px 0 0; }
+  .empty-c { text-align: center; color: var(--muted); margin: 18px 0; }
+  .cmp-scroll { overflow-x: auto; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 460px; }
+  table.cmp th { text-align: left; color: var(--muted); font-weight: 600; white-space: nowrap; padding: 9px 10px 9px 0; width: 1%; }
+  table.cmp td { padding: 9px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  table.cmp tr:first-child td { border-top: 0; }
+  table.cmp td img { display: block; width: 100%; max-width: 180px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; margin-bottom: 6px; }
+  table.cmp td a { color: var(--text); font-weight: 700; text-decoration: none; }
+  table.cmp td.best { background: var(--accent-weak); color: var(--accent); font-weight: 800; }
+  @media (max-width: 760px) {
+    .calc-box { grid-template-columns: minmax(0, 1fr); }
+    .calc-out { position: static; }
+  }
   .room-map { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; padding: 13px 16px; border-radius: 14px; background: #0b4fc6; color: #fff; text-decoration: none; font-size: 15px; }
   .room-map span { font-size: 12.5px; opacity: .85; margin-left: auto; }
   .room .tag { font-size: 12.5px; font-weight: 600; background: var(--bg2); border-radius: 999px; padding: 3px 10px; }
@@ -682,19 +727,10 @@ if (location.protocol === 'file:') {
       rooms: window.ROOMS || [],
     },
     {
-      id: 'menu5', icon: '📁', title: '메뉴 5', desc: '메뉴 설명',
-      groups: [
-      { title: '소제목 1', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      { title: '소제목 2', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      ]
+      // 월세계산기: calc가 있으면 계산기 화면을 보여줘요 (매물 비교는 rooms.js 매물을 써요)
+      id: 'menu5', icon: '🧮', title: '월세계산기', desc: '한 달 자취 비용, 전월세 전환, 매물 비교를 바로 계산해요',
+      calc: true,
+      groups: [],
     },
     {
       // link가 있으면 누를 때 그 주소로 이동해요 (자취지도 = map 폴더의 index.html)
@@ -788,7 +824,7 @@ if (location.protocol === 'file:') {
                 <div>
                   <h3>${m.title}</h3>
                   <p>${m.desc}</p>
-                  <div class="cnt">${m.soon ? '준비 중' : (m.link ? '바로가기' : countTips(m) + '개')}</div>
+                  <div class="cnt">${m.soon ? '준비 중' : (m.link ? '바로가기' : m.calc ? '바로 계산' : countTips(m) + '개')}</div>
                 </div>
                 ${CHEV}
               </a>`).join('')}
@@ -1016,6 +1052,156 @@ if (location.protocol === 'file:') {
     $('rooms').innerHTML = list.length ? list.map(roomCard).join('') : '<div class="none">조건에 맞는 매물이 없어요 😢</div>';
   }
 
+  // ---------- 월세계산기 ----------
+  // 금액은 모두 만원 단위. 보증금 이자 = 보증금을 맡겨서 못 받는 이자(또는 보증금 대출 이자)
+  const CALC_TABS = [['cost', '💰 자취 비용 계산'], ['conv', '🔄 전월세 전환'], ['cmp', '⚖️ 매물 비교']];
+  const calcState = { tab: 'cost', deal: '사글세', deposit: 20, rent: 35, lump: 350, months: 10, fee: 3, util: 7, stay: 12, rate: 3.5,
+    cDep: 500, cRent: 40, cNewDep: 1000, cRate: 6, cmp: ['', '', ''] };
+  const num = v => { const n = parseFloat(String(v).replace(/,/g, '')); return isFinite(n) && n >= 0 ? n : 0; };
+  const man = v => { v = Math.round(v * 10) / 10; return v >= 10000 ? `${+(v / 10000).toFixed(2)}억` : `${v.toLocaleString()}만`; };
+  const roomOpt = r => `${r.title} · ${dealOf(r) === '전세' ? `전세 ${won(r.deposit)}` : dealOf(r) === '사글세' ? `사글세 ${won(r.lump)}` : `${won(r.deposit)}/${won(r.rent)}`}`;
+
+  // 한 가지 조건의 비용 계산 (자취 비용 탭과 매물 비교 탭이 같이 써요)
+  function costCalc(c) {
+    const months = Math.max(1, c.deal === '사글세' ? c.months : c.stay);
+    const rentTotal = c.deal === '월세' ? c.rent * months : c.deal === '사글세' ? c.lump : 0;
+    const feeTotal = c.feeIncluded ? 0 : c.fee * months;
+    const utilTotal = c.util * months;
+    const interest = c.deposit * (c.rate / 100) * months / 12;
+    const upfront = c.deposit + (c.deal === '사글세' ? c.lump + feeTotal : c.deal === '월세' ? c.rent + c.fee : 0);
+    const total = rentTotal + feeTotal + utilTotal + interest;
+    return { months, rentTotal, feeTotal, utilTotal, interest, upfront, total, monthly: total / months, back: c.deposit };
+  }
+
+  function calcHtml() {
+    const avg = (() => { const sg = (window.ROOMS || []).filter(r => dealOf(r) === '사글세'); return sg.length ? Math.round(sg.reduce((a, r) => a + r.lump, 0) / sg.length) : null; })();
+    return `
+      <div class="calc-tabs" id="calcTabs">${CALC_TABS.map(([k, l]) => `<button type="button" class="chip${calcState.tab === k ? ' on' : ''}" data-k="${k}">${l}</button>`).join('')}</div>
+
+      <section class="calc-box" data-pane="cost">
+        <div class="calc-in">
+          <label class="full">우리 사이트 매물에서 불러오기
+            <select id="cLoad"><option value="">직접 입력할게요</option>${(window.ROOMS || []).map(r => `<option value="${r.id}">${esc(roomOpt(r))}</option>`).join('')}</select>
+          </label>
+          <div class="full"><span class="lbl">거래 방식</span>
+            <div class="row" id="cDeal">${['사글세', '월세', '전세'].map(d => `<button type="button" class="chip${calcState.deal === d ? ' on' : ''}" data-d="${d}">${d}</button>`).join('')}</div>
+            <small class="hint" id="cDealHint"></small>
+          </div>
+          <label>보증금 <span class="u"><input data-f="deposit" inputmode="decimal">만원</span></label>
+          <label data-show="월세">월세 (한 달) <span class="u"><input data-f="rent" inputmode="decimal">만원</span></label>
+          <label data-show="사글세">사글세 (한 번에 내는 돈) <span class="u"><input data-f="lump" inputmode="decimal">만원</span></label>
+          <label data-show="사글세">사글세 기간 <span class="u"><input data-f="months" inputmode="numeric">개월</span></label>
+          <label data-show="월세 전세">사는 기간 <span class="u"><input data-f="stay" inputmode="numeric">개월</span></label>
+          <label>관리비 (한 달) <span class="u"><input data-f="fee" inputmode="decimal">만원</span></label>
+          <label>전기·가스·통신 예상 (한 달) <span class="u"><input data-f="util" inputmode="decimal">만원</span></label>
+          <label>보증금 이자 (연) <span class="u"><input data-f="rate" inputmode="decimal">%</span></label>
+          <small class="hint full">보증금 이자: 그 돈을 예금에 넣었으면 받았을 이자(대출받았다면 대출 이자)예요. 보증금이 클수록 숨은 비용이 커져요.</small>
+        </div>
+        <div class="calc-out" id="cOut"></div>
+      </section>
+
+      <section class="calc-box" data-pane="conv">
+        <div class="calc-in">
+          <label>지금 보증금 <span class="u"><input data-f="cDep" inputmode="decimal">만원</span></label>
+          <label>지금 월세 <span class="u"><input data-f="cRent" inputmode="decimal">만원</span></label>
+          <label>바꾸고 싶은 보증금 <span class="u"><input data-f="cNewDep" inputmode="decimal">만원</span></label>
+          <label>전환율 (연) <span class="u"><input data-f="cRate" inputmode="decimal">%</span></label>
+          <small class="hint full">전환율: 보증금 1,000만 원을 월세로 바꿀 때 1년에 몇 %로 치는지예요. 전세를 월세로 바꾸려면 '지금 월세'에 0을 넣으세요. 법으로 정한 상한(한국은행 기준금리 + 2%)을 넘으면 안 돼요.</small>
+        </div>
+        <div class="calc-out" id="vOut"></div>
+      </section>
+
+      <section class="calc-box" data-pane="cmp">
+        <div class="calc-in">
+          ${[0, 1, 2].map(i => `<label class="full">매물 ${i + 1}
+            <select data-cmp="${i}"><option value="">선택 안 함</option>${(window.ROOMS || []).map(r => `<option value="${r.id}">${esc(roomOpt(r))}</option>`).join('')}</select></label>`).join('')}
+          <small class="hint full">공과금·보증금 이자와 월세·전세의 사는 기간은 '자취 비용 계산' 탭 값(월 ${calcState.util}만 · 연 ${calcState.rate}% · ${calcState.stay}개월)으로 맞춰요. 사글세는 그 매물의 기간(안 적혀 있으면 10달)으로 계산해요.</small>
+        </div>
+        <div class="calc-out wide" id="mOut"></div>
+      </section>
+      ${avg ? `<p class="calc-foot">참고: 지금 월세 메뉴에 있는 사글세 매물 평균은 <b>${avg}만 원</b>이에요. 계산 결과는 어림값이니 계약 전에 꼭 집주인·중개사와 확인하세요.</p>` : ''}`;
+  }
+
+  function drawCalc() {
+    const s = calcState;
+    document.querySelectorAll('[data-pane]').forEach(p => p.hidden = p.dataset.pane !== s.tab);
+    // 자취 비용
+    document.querySelectorAll('#cDeal .chip').forEach(b => b.classList.toggle('on', b.dataset.d === s.deal));
+    document.querySelectorAll('[data-show]').forEach(el => el.hidden = !el.dataset.show.split(' ').includes(s.deal));
+    $('cDealHint').textContent = { 사글세: '사글세: 몇 달치 방값을 한 번에 내요 (대구대 근처는 보통 10달치).', 월세: '월세: 매달 방값을 내요.', 전세: '전세: 큰 보증금만 맡기고 방값은 안 내요. 대신 보증금 이자가 숨은 비용이에요.' }[s.deal];
+    const r = costCalc({ ...s, feeIncluded: false });
+    const parts = [['방값', r.rentTotal, '#0b4fc6'], ['관리비', r.feeTotal, '#8e5cf7'], ['공과금', r.utilTotal, '#12945c'], ['보증금 이자', r.interest, '#e8590c']].filter(p => p[1] > 0);
+    const sum = parts.reduce((a, p) => a + p[1], 0) || 1;
+    $('cOut').innerHTML = `
+      <div class="big"><small>한 달에 실제로 드는 돈 (평균)</small><b>${man(r.monthly)}원</b></div>
+      <div class="bar">${parts.map(([l, v, c]) => `<i style="width:${v / sum * 100}%;background:${c}" title="${l}"></i>`).join('')}</div>
+      <div class="leg">${parts.map(([l, v, c]) => `<span><i style="background:${c}"></i>${l} ${man(v)}</span>`).join('')}</div>
+      <dl>
+        <dt>입주할 때 필요한 돈</dt><dd>${man(r.upfront)}원</dd>
+        <dt>${r.months}개월 동안 쓰는 돈 (보증금 빼고)</dt><dd>${man(r.total)}원</dd>
+        <dt>나갈 때 돌려받는 돈</dt><dd>${man(r.back)}원</dd>
+      </dl>
+      <small class="hint">${s.deal === '사글세' ? `입주할 때 = 보증금 + 사글세 + 관리비 ${r.months}개월치를 한 번에 내는 걸로 계산했어요.` : s.deal === '월세' ? '입주할 때 = 보증금 + 첫 달 월세·관리비로 계산했어요.' : '입주할 때 = 전세 보증금이에요.'}</small>`;
+    // 전월세 전환
+    const diff = s.cNewDep - s.cDep, newRent = s.cRent - diff * (s.cRate / 100) / 12;
+    $('vOut').innerHTML = newRent < 0
+      ? `<div class="big"><small>바꾼 뒤 월세</small><b>0만원</b></div><p>보증금을 이만큼 올리면 월세가 없어져요. 월세 없이 살려면 보증금 <b>${man(s.cDep + s.cRent * 12 / (s.cRate / 100 || 1))}원</b>쯤이면 돼요 (전세).</p>`
+      : `<div class="big"><small>바꾼 뒤 월세</small><b>${man(newRent)}원</b></div>
+        <dl>
+          <dt>보증금</dt><dd>${man(s.cDep)} → ${man(s.cNewDep)}원</dd>
+          <dt>월세</dt><dd>${man(s.cRent)} → ${man(newRent)}원 (${diff >= 0 ? '−' : '+'}${man(Math.abs(s.cRent - newRent))})</dd>
+          <dt>1년 방값 차이</dt><dd>${diff >= 0 ? '' : '+'}${man((newRent - s.cRent) * 12)}원</dd>
+        </dl>
+        <small class="hint">보증금 ${man(Math.abs(diff))}원 × ${s.cRate}% ÷ 12개월 = 월세 ${man(Math.abs(s.cRent - newRent))}원 차이로 계산했어요.</small>`;
+    // 매물 비교
+    const picks = s.cmp.map(id => (window.ROOMS || []).find(r => String(r.id) === id)).filter(Boolean);
+    if (!picks.length) { $('mOut').innerHTML = '<p class="empty-c">위에서 비교할 매물을 2~3개 골라 보세요 🏠</p>'; return; }
+    const rows = picks.map(r => {
+      const d = dealOf(r), feeIncl = /관리비 포함/.test(r.memo || '');
+      const c = costCalc({ deal: d, deposit: r.deposit || 0, rent: r.rent || 0, lump: r.lump || 0, months: r.months || 10, fee: r.fee || 0, util: s.util, stay: s.stay, rate: s.rate, feeIncluded: feeIncl });
+      return { r, c, py: r.m2 ? r.m2 / 3.3058 : null };
+    });
+    const best = Math.min(...rows.map(x => x.c.monthly)), bestUp = Math.min(...rows.map(x => x.c.upfront));
+    const line = (label, f, hl) => `<tr><th>${label}</th>${rows.map(x => `<td class="${hl && hl(x) ? 'best' : ''}">${f(x)}</td>`).join('')}</tr>`;
+    $('mOut').innerHTML = `<div class="cmp-scroll"><table class="cmp">
+      <tr><th></th>${rows.map(x => `<td>${x.r.img ? `<img src="${esc(x.r.img)}" alt="" loading="lazy">` : ''}<a href="${esc(x.r.url)}" target="_blank" rel="noopener">${esc(x.r.title)} ↗</a></td>`).join('')}</tr>
+      ${line('동네', x => esc(x.r.town || '-'))}
+      ${line('조건', x => roomOpt(x.r).split(' · ').pop() + (x.r.deposit && dealOf(x.r) !== '전세' ? ` (보증금 ${won(x.r.deposit)})` : ''))}
+      ${line('넓이', x => x.py ? `${Math.round(x.py)}평` : '-')}
+      ${line('한 달 평균', x => `<b>${man(x.c.monthly)}원</b>`, x => x.c.monthly === best && rows.length > 1)}
+      ${line('입주할 때', x => man(x.c.upfront) + '원', x => x.c.upfront === bestUp && rows.length > 1)}
+      ${line('계약 기간 총비용', x => `${man(x.c.total)}원<br><small>${x.c.months}개월 · 보증금 빼고</small>`)}
+      ${line('평당 한 달', x => x.py ? man(x.c.monthly / x.py) + '원' : '-')}
+    </table></div><small class="hint">파란 칸이 가장 싼 쪽이에요. 한 달 평균 = 계약 기간 총비용 ÷ 개월 수예요. 관리비 포함 매물은 관리비를 0으로, 직방 정보에 관리비가 없으면 0으로 계산했어요.</small>`;
+  }
+
+  function bindCalc() {
+    const s = calcState;
+    document.querySelectorAll('[data-f]').forEach(inp => {
+      inp.value = s[inp.dataset.f];
+      inp.oninput = () => { s[inp.dataset.f] = num(inp.value); drawCalc(); };
+    });
+    $('calcTabs').onclick = e => {
+      const b = e.target.closest('.chip'); if (!b) return;
+      s.tab = b.dataset.k; $('calcTabs').querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c === b));
+      if (s.tab === 'cmp') { const h = document.querySelector('[data-pane="cmp"] .hint'); if (h) h.textContent = `공과금·보증금 이자와 월세·전세의 사는 기간은 '자취 비용 계산' 탭 값(월 ${s.util}만 · 연 ${s.rate}% · ${s.stay}개월)으로 맞춰요. 사글세는 그 매물의 기간(안 적혀 있으면 10달)으로 계산해요.`; }
+      drawCalc();
+    };
+    $('cDeal').onclick = e => { const b = e.target.closest('.chip'); if (b) { s.deal = b.dataset.d; drawCalc(); } };
+    $('cLoad').onchange = e => {
+      const r = (window.ROOMS || []).find(x => String(x.id) === e.target.value); if (!r) return;
+      s.deal = dealOf(r); s.deposit = r.deposit || 0; s.rent = r.rent || 0; s.lump = r.lump || 0; s.months = r.months || 10;
+      s.fee = /관리비 포함/.test(r.memo || '') ? 0 : (r.fee || 0);
+      document.querySelectorAll('[data-f]').forEach(inp => inp.value = s[inp.dataset.f]);
+      drawCalc();
+    };
+    document.querySelectorAll('[data-cmp]').forEach(sel => {
+      sel.value = s.cmp[+sel.dataset.cmp];
+      sel.onchange = () => { s.cmp[+sel.dataset.cmp] = sel.value; drawCalc(); };
+    });
+    drawCalc();
+  }
+
   function renderMenu(m) {
     if (m.articles) return tipsPage(m);
     const i = MENUS.indexOf(m), prev = MENUS[i - 1], next = MENUS[i + 1];
@@ -1027,14 +1213,15 @@ if (location.protocol === 'file:') {
           <p>${m.desc}</p>
         </div>
       </section>
-      <div class="container page-body"${m.rooms || m.terms ? ' style="grid-template-columns:minmax(0,1fr)"' : ''}>
-        <aside class="toc"${m.rooms || m.terms ? ' style="display:none"' : ''}>
+      <div class="container page-body"${m.rooms || m.terms || m.calc ? ' style="grid-template-columns:minmax(0,1fr)"' : ''}>
+        <aside class="toc"${m.rooms || m.terms || m.calc ? ' style="display:none"' : ''}>
           <b>목차</b>
           ${m.groups.map((g, gi) => `<a href="#${m.id}/g${gi}" data-g="${gi}">${g.icon} ${g.title}</a>`).join('')}
         </aside>
         <div>
           ${m.terms ? termsHtml(m) : ''}
           ${m.rooms ? roomsHtml(m) : ''}
+          ${m.calc ? calcHtml() : ''}
           ${m.soon ? '<div class="group"><p style="color:var(--muted)">🛠️ 준비 중이에요. 곧 열릴 예정이에요!</p></div>' : ''}
           ${m.groups.map((g, gi) => `
             <div class="group" id="g${gi}">
@@ -1108,6 +1295,7 @@ if (location.protocol === 'file:') {
       $('termChips').onclick = e => { const b = e.target.closest('.chip'); if (b) { termState.c = b.dataset.c; drawTerms(m); } };
       drawTerms(m);
     }
+    if (m?.calc) bindCalc();
     if (m?.rooms) {
       $('roomQ').value = roomState.q;
       $('roomQ').oninput = e => { roomState.q = e.target.value; drawRooms(m); };
