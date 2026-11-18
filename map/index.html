@@ -1310,7 +1310,7 @@ if (location.protocol === 'file:') {
   }
 
   // ---------- 주변 편의시설 (카카오 카테고리 검색) ----------
-  const AMEN = [['CS2', '🏪', '편의점'], ['FD6', '🍚', '음식점'], ['CE7', '☕', '카페'], ['PM9', '💊', '약국'], ['MT1', '🛒', '마트']];
+  const AMEN = [['CS2', '🏪', '편의점'], ['FD6', '🍚', '음식점'], ['CE7', '☕', '카페'], ['PM9', '💊', '약국'], ['q:마트', '🛒', '마트']];   // q: 는 이름으로 검색
   function clearAmen() { amenOvs.forEach(o => o.setMap(null)); amenOvs = []; }
   function showAmen(r) {
     if (!places) return toast('카카오맵이 연결되어야 해요');
@@ -1320,7 +1320,8 @@ if (location.protocol === 'file:') {
     const counts = {}, S = kakao.maps.services.Status;
     let left = AMEN.length;
     AMEN.forEach(([code, emoji, label]) => {
-      places.categorySearch(code, (data, status) => {
+      const search = code.startsWith('q:') ? (cb, o) => places.keywordSearch(code.slice(2), cb, o) : (cb, o) => places.categorySearch(code, cb, o);
+      search((data, status) => {
         counts[label] = status === S.OK ? data.length : 0;
         if (status === S.OK) data.slice(0, 8).forEach(p => {
           amenOvs.push(makeOverlay(+p.y, +p.x, `<div class="amen" title="${esc(p.place_name)} · ${p.distance}m">${emoji}</div>`,
@@ -1365,7 +1366,7 @@ if (location.protocol === 'file:') {
   // code: 카카오 카테고리 코드 / q: 카테고리가 없으면 키워드로 찾아요
   const FACIL = {
     conv:   { label: '편의점',   emoji: '🏪', color: '#4f8cff', code: 'CS2' },
-    mart:   { label: '마트',     emoji: '🛒', color: '#2bb673', code: 'MT1' },
+    mart:   { label: '마트',     emoji: '🛒', color: '#2bb673', q: '마트' },
     food:   { label: '음식점',   emoji: '🍚', color: '#ff7a45', code: 'FD6' },
     cafe:   { label: '카페',     emoji: '☕', color: '#a0703c', code: 'CE7' },
     pharm:  { label: '약국',     emoji: '💊', color: '#e5484d', code: 'PM9' },
