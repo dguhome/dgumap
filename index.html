@@ -677,7 +677,9 @@ if (location.protocol === 'file:') {
       id: 'menu4', icon: '🏠', title: '월세', desc: '대구대 주변 월세 매물을 한눈에 모아 봤어요',
       groups: [],
       rooms: [
-        { url: 'https://www.zigbang.com/home/villa/items/50944727', title: '직방 빌라 매물 #50944727', deposit: null, rent: null, fee: null, type: '빌라', walk: null, img: '', addr: '', memo: '가격·면적은 직방에서 확인 후 채워 주세요' },
+        // 사글세: deal: '사글세', lump: 한 번에 내는 금액, months: 몇 달치인지 (rent는 한 달로 나눈 값, 정렬용)
+        { url: 'https://www.zigbang.com/home/oneroom/items/51040254', title: '두두빌 분리형 원룸', deal: '사글세', deposit: 20, lump: 420, months: 10, rent: 42, fee: 3, type: '원룸', walk: null, img: 'https://ic.zigbang.com/ic/items/51040254/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 94-14', memo: '정문 종점 앞 · 4층/5층 · 엘리베이터 · 리모델링 · 7평(23㎡) · 풀옵션 · 주차 가능 · 12/20 이후 입주' },
+        { url: 'https://www.zigbang.com/home/villa/items/50944727', title: '개별형 투룸 (화장실 2개)', deposit: 8000, rent: 0, fee: 7, type: '투룸', walk: null, img: 'https://ic.zigbang.com/ic/items/50944727/1.jpg?w=600&h=450', addr: '경산시 진량읍 내리리 249-14', memo: '빌라 · 4층/4층 · 에어컨 3대 · 15평(51㎡) · 풀옵션 · 주차 가능 · 12/19 이후 입주' },
         { url: '', sample: true, title: '예시) 정문 앞 원룸', deposit: 300, rent: 30, fee: 5, type: '원룸', walk: 5, addr: '경산시 진량읍 내리리', memo: '정문 도보 5분 · 풀옵션' },
         { url: '', sample: true, title: '예시) 신축 투룸', deposit: 500, rent: 45, fee: 7, type: '투룸', walk: 10, addr: '경산시 진량읍 내리리', memo: '2인 자취 추천' },
         { url: '', sample: true, title: '예시) 저렴한 원룸', deposit: 100, rent: 25, fee: 3, type: '원룸', walk: 15, addr: '경산시 진량읍 문천리', memo: '엘리베이터 없음' },
@@ -978,12 +980,12 @@ if (location.protocol === 'file:') {
   function roomCard(r) {
     const tag = r.url ? 'a' : 'div';
     const attr = r.url ? ` href="${esc(r.url)}" target="_blank" rel="noopener"` : '';
-    const meta = [r.walk != null && r.walk !== '' ? `학교까지 도보 ${esc(r.walk)}분` : '', r.fee != null ? `관리비 ${won(r.fee)}만` : '']
+    const meta = [dealOf(r) === '사글세' && r.rent ? `한 달 약 ${won(r.rent)}만` : '', r.walk != null && r.walk !== '' ? `학교까지 도보 ${esc(r.walk)}분` : '', r.fee != null ? `관리비 ${won(r.fee)}만` : '']
       .filter(Boolean).map(t => `<span>${t}</span>`).join(' · ') || esc(r.addr || '');
     return `<${tag} class="room"${attr}>
         <div class="ph">${r.img ? `<img src="${esc(r.img)}" alt="" loading="lazy">` : '🏠'}${r.sample ? '<span class="sample">예시</span>' : ''}</div>
         <h3>${esc(r.title || '매물')}</h3>
-        <div class="price">${dealOf(r) === '전세' ? `전세 ${won(r.deposit)}` : `보증금 ${won(r.deposit)} / 월 ${won(r.rent)}`}</div>
+        <div class="price">${dealOf(r) === '전세' ? `전세 ${won(r.deposit)}` : dealOf(r) === '사글세' ? `보증금 ${won(r.deposit)} / 사글세 ${won(r.lump)}${r.months ? ` (${esc(r.months)}달)` : ''}` : `보증금 ${won(r.deposit)} / 월 ${won(r.rent)}`}</div>
         ${meta ? `<div class="meta">${meta}</div>` : ''}
         <div class="foot">${r.type ? `<span class="tag">${esc(r.type)}</span>` : ''}${r.url ? '<span class="go">보러가기 ↗</span>' : ''}</div>
       </${tag}>`;
@@ -998,7 +1000,7 @@ if (location.protocol === 'file:') {
       </label>
       <div class="room-filter">
         <b>검색 및 필터</b>
-        <div class="row" id="roomTypes">${['', ...types, '월세', '전세'].map(t => `<button type="button" class="chip${t === roomState.type ? ' on' : ''}" data-type="${esc(t)}">${t ? esc(t) : '전체'}</button>`).join('')}</div>
+        <div class="row" id="roomTypes">${['', ...types, '월세', '전세', ...(m.rooms.some(r => dealOf(r) === '사글세') ? ['사글세'] : [])].map(t => `<button type="button" class="chip${t === roomState.type ? ' on' : ''}" data-type="${esc(t)}">${t ? esc(t) : '전체'}</button>`).join('')}</div>
         <div class="row sort" id="roomSorts">${ROOM_SORTS.map(([k, l]) => `<button type="button" class="chip${k === roomState.sort ? ' on' : ''}" data-sort="${k}">${l}</button>`).join('')}</div>
       </div>
       <div class="rooms" id="rooms"></div>
