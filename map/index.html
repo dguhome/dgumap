@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>자취지도</title>
 <!-- 앱(홈 화면에 추가) 설정 -->
 <link rel="manifest" href="../manifest.json">
@@ -31,6 +31,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
   body {
+    word-break: keep-all; overflow-wrap: break-word;
     font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
     background: var(--bg); color: var(--text); display: flex; height: 100vh; height: 100dvh; overflow: hidden;
   }
@@ -295,6 +296,7 @@
   }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--dc); margin-right: 5px; vertical-align: -1px; }
   .legend small { color: var(--muted); display: block; }
+  .legend em { font-style: normal; }
 
   /* 매물 팝업 */
   .pop.room { width: 290px; padding: 0 0 12px; overflow: hidden; white-space: normal; }
@@ -336,6 +338,7 @@
     padding: 7px 14px; border-radius: 999px; font-size: 12.5px; box-shadow: var(--shadow); white-space: nowrap;
   }
   .fac-hint[hidden] { display: none; }
+  .sky-btn { display: none; }
   .fdot { display: flex; align-items: center; gap: 4px; cursor: pointer; }
   .fdot span {
     width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 2px solid var(--fc); display: grid; place-items: center;
@@ -351,7 +354,7 @@
   @media (max-width: 760px) {
     body { flex-direction: column; }
     #sidebar {
-      position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: 66vh;
+      position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: 66vh; height: 66dvh;
       border-right: none; border-top: 1px solid var(--line); border-radius: 18px 18px 0 0;
       box-shadow: 0 -6px 24px rgba(0,0,0,.12); transform: translateY(100%); transition: transform .25s; z-index: 1000;
     }
@@ -365,10 +368,22 @@
     .pop { width: 230px; }
     .pop.room { width: 260px; }
     .pop.room .ph { height: 120px; }
-    .legend { bottom: auto; top: 58px; left: 12px; font-size: 11px; padding: 6px 9px; }
-    .facbar { right: 128px; }
-    .fac-hint { top: 100px; }
-    .legend small { display: none; }
+    /* 휴대폰: 위쪽 시설 버튼은 화면 끝까지, 색 설명은 한 줄로 */
+    .facbar { right: 12px; left: 10px; top: 10px; }
+    .fchip { padding: 6px 11px; font-size: 12.5px; }
+    .legend { bottom: auto; top: 54px; left: 12px; font-size: 11px; padding: 4px 10px; display: flex; gap: 10px; line-height: 1.5; border-radius: 999px; }
+    .legend small, .legend em { display: none; }
+    .fac-hint { top: 88px; font-size: 12px; }
+    .banner { top: 88px; max-width: calc(100% - 24px); white-space: normal; text-align: center; }
+    .fab-group { gap: 8px; bottom: calc(16px + env(safe-area-inset-bottom)); }
+    .fab { padding: 10px 14px; font-size: 14px; }
+    .toast { bottom: auto; top: 120px; max-width: calc(100% - 32px); text-align: center; }
+    .modal { max-height: 85dvh; }
+    .sky-btn {
+      display: block; position: absolute; top: 54px; right: 12px; z-index: 600; border: 1px solid var(--line); background: var(--panel);
+      color: var(--text); border-radius: 999px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; box-shadow: var(--shadow); cursor: pointer;
+    }
+    .sky-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   }
 </style>
 </head>
@@ -448,10 +463,11 @@
   <div class="banner" id="banner"></div>
   <div class="facbar" id="facBar"></div>
   <div class="fac-hint" id="facHint" hidden></div>
+  <button class="sky-btn" id="skyBtn" type="button">🛰️ 스카이뷰</button>
   <div class="legend rooms-only" id="legend">
-    <div class="d-sg"><i></i>사글세 (한 번에 내는 돈)</div>
+    <div class="d-sg"><i></i>사글세<em> (한 번에 내는 돈)</em></div>
     <div class="d-js"><i></i>전세</div>
-    <div class="d-ws"><i></i>월세 (보증금/월)</div>
+    <div class="d-ws"><i></i>월세<em> (보증금/월)</em></div>
     <small>숫자는 만원 · 축소하면 동네별 요약</small>
   </div>
   <div class="fab-group">
@@ -621,8 +637,17 @@ if (location.protocol === 'file:') {
     const c = state.view?.center || state.home || DEFAULT_CENTER;
     // 기본은 대구대 + 주변 동네(진량·하양 일대)가 보이는 넓이
     map = new kakao.maps.Map($('map'), { center: LL(c[0], c[1]), level: state.view?.lv || 6 });
-    map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
-    map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
+    // 휴대폰에서는 손가락으로 확대/축소하므로 확대 버튼은 빼고, 지도/스카이뷰는 작은 버튼 하나로
+    if (matchMedia('(max-width: 760px)').matches) {
+      $('skyBtn').onclick = () => {
+        const sky = map.getMapTypeId() !== kakao.maps.MapTypeId.HYBRID;
+        map.setMapTypeId(sky ? kakao.maps.MapTypeId.HYBRID : kakao.maps.MapTypeId.ROADMAP);
+        $('skyBtn').classList.toggle('on', sky);
+      };
+    } else {
+      map.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
+      map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
+    }
     places = new kakao.maps.services.Places();
     popup = new kakao.maps.CustomOverlay({ yAnchor: 1, zIndex: 20, clickable: true });
 
