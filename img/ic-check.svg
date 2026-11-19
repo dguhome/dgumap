@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- 계약 체크리스트 아이콘: 클립보드 + 체크 -->
+  <rect x="22" y="16" width="76" height="96" rx="12" fill="#1d5fd6"/>
+  <rect x="24" y="18" width="72" height="92" rx="10" fill="#2f74ea"/>
+  <rect x="31" y="27" width="58" height="77" rx="6" fill="#ffffff"/>
+  <rect x="44" y="9" width="32" height="18" rx="6" fill="#1d4fb0"/>
+  <circle cx="60" cy="15" r="3.5" fill="#9dbcf3"/>
+  <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M38 45 l5 5 l9 -10" stroke="#22b07d" stroke-width="5"/>
+    <path d="M38 66 l5 5 l9 -10" stroke="#22b07d" stroke-width="5"/>
+    <path d="M38 87 l5 5 l9 -10" stroke="#22b07d" stroke-width="5"/>
+    <path d="M58 46 h23 M58 67 h23 M58 88 h17" stroke="#b9cdee" stroke-width="5"/>
+  </g>
+</svg>
