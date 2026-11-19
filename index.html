@@ -248,7 +248,7 @@
     .tip-article { padding: 18px; }
   }
 
-  /* ---------- 자취용어백과 ---------- */
+  /* ---------- 자취용어 ---------- */
   .terms-box { max-width: 780px; }
   .term-search { display: block; width: 100%; font: inherit; font-size: 16px; padding: 14px 22px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--text); outline: none; }
   .term-search:focus { border-color: var(--accent); }
@@ -639,9 +639,9 @@ if (location.protocol === 'file:') {
       ],
     },
     {
-      // 자취용어백과: terms 목록에 한 줄씩 추가하면 돼요
+      // 자취용어: terms 목록에 한 줄씩 추가하면 돼요
       // w: 용어 / c: 분류(부동산·공과금·생활·집 구조) / d: 한 줄 뜻 / more: 덧붙일 설명(없어도 됨)
-      id: 'menu2', icon: '📖', title: '자취용어백과', desc: '자취 초보를 위한 생활 용어 모음',
+      id: 'menu2', icon: '📖', title: '자취용어', desc: '자취 초보를 위한 생활 용어 모음',
       img: 'img/ic-word.jpg', tint: ['#eee9fe', '#f7f4ff'],
       groups: [],
       termCats: ['부동산', '공과금', '생활', '집 구조'],
@@ -996,7 +996,7 @@ if (location.protocol === 'file:') {
     drawTipFilter(m);
   }
 
-  // ---------- 자취용어백과 ----------
+  // ---------- 자취용어 ----------
   const termState = { q: '', c: '전체' };
   function termsHtml(m) {
     return `
