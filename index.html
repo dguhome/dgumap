@@ -336,6 +336,22 @@
   .calc-out p { font-size: 14px; line-height: 1.6; }
   .hint { display: block; font-size: 12px; color: var(--muted); font-weight: 400; line-height: 1.55; }
   .calc-foot { font-size: 13px; color: var(--muted); margin: 16px 0 0; }
+  .ck-top { background: var(--accent-weak); border-radius: 16px; padding: 16px 18px; margin-bottom: 24px; position: sticky; top: 76px; z-index: 5; }
+  .ck-top .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14.5px; }
+  .ck-top b { color: var(--accent); font-size: 18px; }
+  .ck-top button { font: inherit; font-size: 13px; font-weight: 600; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .ck-bar { height: 10px; border-radius: 999px; background: var(--panel); overflow: hidden; margin-top: 10px; }
+  .ck-bar i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 999px; transition: width .3s; }
+  .group h2 .ck-n { margin-left: auto; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+  .group h2 .ck-n.done { color: var(--accent); }
+  .ck { display: flex; gap: 12px; align-items: flex-start; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 13px 16px; margin-bottom: 8px; cursor: pointer; }
+  .ck input { width: 20px; height: 20px; flex: none; margin: 1px 0 0; accent-color: var(--accent); cursor: pointer; }
+  .ck span { font-size: 15px; font-weight: 600; line-height: 1.5; word-break: keep-all; }
+  .ck small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+  .ck:has(input:checked) { background: var(--accent-weak); border-color: var(--accent-2); }
+  .ck:has(input:checked) span { color: var(--muted); text-decoration: line-through; }
+  .ck:has(input:checked) small { text-decoration: none; }
+  @media (max-width: 600px) { .ck-top { top: 64px; padding: 12px 14px; margin-bottom: 18px; } .ck { padding: 12px 13px; } .ck span { font-size: 14.5px; } }
   .empty-c { text-align: center; color: var(--muted); margin: 18px 0; }
   .cmp-scroll { overflow-x: auto; }
   table.cmp { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 460px; }
@@ -596,20 +612,65 @@ if (location.protocol === 'file:') {
   // 메뉴: id(주소용 영문), icon, title, desc, groups(소제목) > tips(t: 제목, d: 내용 HTML)
   const MENUS = [
     {
-      id: 'menu1', icon: '📁', title: '메뉴 1', desc: '메뉴 설명',
+      // 계약 체크리스트: checks 목록에 단계(title)별로 항목을 추가하면 돼요
+      // t: 확인할 내용 / d: 짧은 설명(없어도 됨). 체크한 내용은 그 기기에만 저장돼요
+      id: 'menu1', icon: '✅', title: '계약 체크리스트', desc: '방 보기부터 입주까지, 계약할 때 꼭 확인할 것들',
       img: 'img/ic-room.jpg', tint: ['#e3eefe', '#f2f7ff'],
-      groups: [
-      { title: '소제목 1', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      { title: '소제목 2', icon: '📌', tips: [
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-        { t: '제목', d: '<p>내용</p>' },
-      ]},
-      ]
+      groups: [],
+      checks: [
+        { title: '방 보러 가기 전', icon: '🔍', items: [
+          { t: '예산 정하기 (보증금·월세·관리비 최대 금액)', d: '월세계산기로 한 달 총비용을 미리 계산해 보세요.' },
+          { t: '학교·버스정류장까지 거리 확인', d: '지도로 도보 시간과 경사(언덕)를 같이 봐요.' },
+          { t: '매물 사진과 실제 정보가 맞는지 중개사에게 물어보기' },
+          { t: '방문 시간은 낮에, 가능하면 밤에도 한 번 더', d: '밤길 밝기와 주변 소음이 달라요.' },
+        ]},
+        { title: '방 볼 때', icon: '🏠', items: [
+          { t: '수압·배수 확인', d: '세면대·샤워기·변기 물을 동시에 틀어 보세요.' },
+          { t: '온수가 잘 나오는지 확인' },
+          { t: '곰팡이·결로·누수 흔적 확인', d: '창틀, 벽 모서리, 천장, 붙박이장 안쪽을 살펴요.' },
+          { t: '창문·방충망·잠금장치 상태 확인' },
+          { t: '방음 확인', d: '벽을 두드려 보고 옆집·복도 소리가 들리는지 들어 보세요.' },
+          { t: '채광·방향 확인 (남향이 좋아요)' },
+          { t: '옵션 가전이 잘 작동하는지 직접 켜 보기', d: '에어컨·냉장고·세탁기·인덕션(가스레인지)·보일러.' },
+          { t: '휴대폰 신호와 인터넷 설치 여부 확인' },
+          { t: '도어락·현관 CCTV·건물 출입문 등 보안 확인' },
+          { t: '쓰레기·분리수거 버리는 곳 확인' },
+          { t: '주차·자전거 보관 가능 여부 확인' },
+          { t: '방 상태를 사진·영상으로 남기기' },
+        ]},
+        { title: '돈 관련 확인', icon: '💰', items: [
+          { t: '보증금·월세 금액과 내는 날짜 확인' },
+          { t: '관리비 금액과 포함 항목 확인', d: '인터넷·수도·TV·청소비가 포함인지 물어보세요.' },
+          { t: '전기·가스 요금 방식 확인', d: '도시가스인지 LPG인지, 겨울철 평균 요금이 얼마인지.' },
+          { t: '중개보수(복비) 금액 미리 확인' },
+          { t: '계약금 비율과 돌려받는 조건 확인', d: '보통 보증금의 10%예요.' },
+        ]},
+        { title: '계약서 쓰기 전', icon: '📑', items: [
+          { t: '등기부등본 떼어 보기', d: '인터넷등기소에서 누구나 발급할 수 있어요. 계약 당일에 한 번 더 확인하면 더 안전해요.' },
+          { t: '계약하는 사람이 등기부상 집주인과 같은지 확인', d: '신분증으로 확인하고, 대리인이면 위임장과 인감증명서를 받아요.' },
+          { t: '근저당(대출) 금액이 너무 크지 않은지 확인', d: '대출 + 보증금이 집값에 가까우면 위험해요.' },
+          { t: '공인중개사 등록 여부 확인', d: '국가공간정보포털(브이월드)에서 조회할 수 있어요.' },
+          { t: '집주인 세금 체납 여부 확인', d: '집주인 동의를 받아 국세·지방세 납세증명서를 볼 수 있어요.' },
+          { t: '다가구 주택이면 다른 세입자 보증금 규모 물어보기' },
+        ]},
+        { title: '계약서 쓸 때', icon: '✍️', items: [
+          { t: '주소·호수가 등기부등본과 똑같은지 확인' },
+          { t: '보증금·월세·계약 기간·입주 날짜 확인' },
+          { t: '보증금은 집주인 본인 명의 계좌로 보내기', d: '이체 기록이 남도록 계좌이체로 해요.' },
+          { t: '특약은 계약서에 글로 남기기', d: '예) 입주 전 도배·청소, 고장 수리는 집주인 부담, 잔금일까지 근저당 추가 없음.' },
+          { t: '옵션 목록과 고장 시 수리 책임 적기' },
+          { t: '중도 퇴실 시 조건 확인', d: '새 세입자를 구해야 하는지, 복비는 누가 내는지 미리 정해요.' },
+          { t: '계약서 사본 받고, 영수증 챙기기' },
+        ]},
+        { title: '입주 후', icon: '🔑', items: [
+          { t: '전입신고 하기 (이사 후 14일 이내)', d: '주민센터나 정부24에서 할 수 있어요.' },
+          { t: '확정일자 받기', d: '전입신고와 함께 하면 보증금을 지키는 권리가 생겨요.' },
+          { t: '입주 당일 방 상태 사진 찍어 두기', d: '원래 있던 흠집은 집주인에게 문자로 보내 두면 퇴실할 때 편해요.' },
+          { t: '전기·수도·가스 계량기 숫자 사진 찍기' },
+          { t: '도어락 비밀번호 바꾸기' },
+          { t: '은행·택배·학교 등 주소 변경하기' },
+        ]},
+      ],
     },
     {
       // 자취용어백과: terms 목록에 한 줄씩 추가하면 돼요
@@ -759,10 +820,11 @@ if (location.protocol === 'file:') {
   const ALL = MENUS.flatMap(m => [
     ...m.groups.flatMap((g, gi) => g.tips.map((t, ti) => ({ ...t, m, g, gi, ti, href: `#${m.id}/${gi}-${ti}` }))),
     ...(m.articles || []).map((x, i) => ({ t: x.title, d: strip(x.body), m, g: { title: x.cat }, href: `#${m.id}/a${i}` })),
+    ...(m.checks || []).flatMap(g => g.items.map(x => ({ t: x.t, d: x.d || '', m, g, href: `#${m.id}` }))),
     ...(m.terms || []).map((x, i) => ({ t: x.w, d: x.d + ' ' + (x.more || ''), m, g: { title: x.c }, href: `#${m.id}/w${i}` })),
   ]);
   const hrefOf = m => m.link || '#' + m.id;
-  const countTips = m => m.articles ? m.articles.length : m.terms ? m.terms.length : m.rooms ? m.rooms.length : m.groups.reduce((a, g) => a + g.tips.length, 0);
+  const countTips = m => m.checks ? m.checks.reduce((a, g) => a + g.items.length, 0) : m.articles ? m.articles.length : m.terms ? m.terms.length : m.rooms ? m.rooms.length : m.groups.reduce((a, g) => a + g.tips.length, 0);
 
   // 테마
   const theme = store.get('jachi-theme');
@@ -1202,6 +1264,48 @@ if (location.protocol === 'file:') {
     drawCalc();
   }
 
+  // ================= 계약 체크리스트 =================
+  const CK_KEY = 'jachi-checks';
+  const ckLoad = () => { try { return JSON.parse(store.get(CK_KEY)) || {}; } catch { return {}; } };
+  function checksHtml(m) {
+    const done = ckLoad();
+    return `
+      <div class="ck-top">
+        <div class="row"><span>진행률 <b id="ckPct">0%</b> <span id="ckCnt" style="color:var(--muted)"></span></span><button type="button" id="ckReset">처음부터 다시</button></div>
+        <div class="ck-bar"><i id="ckBar"></i></div>
+      </div>
+      ${m.checks.map((g, gi) => `
+        <div class="group">
+          <h2>${g.icon} ${g.title}<span class="ck-n" data-ckg="${gi}"></span></h2>
+          ${g.items.map((x, xi) => `
+            <label class="ck"><input type="checkbox" data-ck="${gi}-${xi}"${done[gi + '-' + xi] ? ' checked' : ''}>
+              <span>${esc(x.t)}${x.d ? `<small>${esc(x.d)}</small>` : ''}</span></label>`).join('')}
+        </div>`).join('')}
+      <p class="calc-foot">체크한 내용은 이 기기(브라우저)에만 저장돼요. 계약 전 최종 확인은 꼭 집주인·공인중개사와 함께 하세요.</p>`;
+  }
+  function drawChecks(m) {
+    const boxes = [...document.querySelectorAll('[data-ck]')];
+    const on = boxes.filter(b => b.checked).length;
+    const pct = boxes.length ? Math.round(on / boxes.length * 100) : 0;
+    $('ckPct').textContent = pct + '%'; $('ckCnt').textContent = `(${on}/${boxes.length})`; $('ckBar').style.width = pct + '%';
+    m.checks.forEach((g, gi) => {
+      const n = boxes.filter(b => b.dataset.ck.startsWith(gi + '-') && b.checked).length, el = document.querySelector(`[data-ckg="${gi}"]`);
+      el.textContent = `${n}/${g.items.length}`; el.classList.toggle('done', n === g.items.length);
+    });
+  }
+  function bindChecks(m) {
+    document.querySelectorAll('[data-ck]').forEach(b => b.onchange = () => {
+      const done = ckLoad();
+      if (b.checked) done[b.dataset.ck] = 1; else delete done[b.dataset.ck];
+      store.set(CK_KEY, JSON.stringify(done)); drawChecks(m);
+    });
+    $('ckReset').onclick = () => {
+      if (!confirm('체크한 내용을 모두 지울까요?')) return;
+      store.set(CK_KEY, '{}'); document.querySelectorAll('[data-ck]').forEach(b => b.checked = false); drawChecks(m);
+    };
+    drawChecks(m);
+  }
+
   function renderMenu(m) {
     if (m.articles) return tipsPage(m);
     const i = MENUS.indexOf(m), prev = MENUS[i - 1], next = MENUS[i + 1];
@@ -1213,8 +1317,8 @@ if (location.protocol === 'file:') {
           <p>${m.desc}</p>
         </div>
       </section>
-      <div class="container page-body"${m.rooms || m.terms || m.calc ? ' style="grid-template-columns:minmax(0,1fr)"' : ''}>
-        <aside class="toc"${m.rooms || m.terms || m.calc ? ' style="display:none"' : ''}>
+      <div class="container page-body"${m.rooms || m.terms || m.calc || m.checks ? ' style="grid-template-columns:minmax(0,1fr)"' : ''}>
+        <aside class="toc"${m.rooms || m.terms || m.calc || m.checks ? ' style="display:none"' : ''}>
           <b>목차</b>
           ${m.groups.map((g, gi) => `<a href="#${m.id}/g${gi}" data-g="${gi}">${g.icon} ${g.title}</a>`).join('')}
         </aside>
@@ -1222,6 +1326,7 @@ if (location.protocol === 'file:') {
           ${m.terms ? termsHtml(m) : ''}
           ${m.rooms ? roomsHtml(m) : ''}
           ${m.calc ? calcHtml() : ''}
+          ${m.checks ? checksHtml(m) : ''}
           ${m.soon ? '<div class="group"><p style="color:var(--muted)">🛠️ 준비 중이에요. 곧 열릴 예정이에요!</p></div>' : ''}
           ${m.groups.map((g, gi) => `
             <div class="group" id="g${gi}">
@@ -1296,6 +1401,7 @@ if (location.protocol === 'file:') {
       drawTerms(m);
     }
     if (m?.calc) bindCalc();
+    if (m?.checks) bindChecks(m);
     if (m?.rooms) {
       $('roomQ').value = roomState.q;
       $('roomQ').oninput = e => { roomState.q = e.target.value; drawRooms(m); };
